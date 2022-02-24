@@ -1,0 +1,72 @@
+*{
+  box-sizing: border-box;
+}
+
+body{
+  background: #e5e5e5;
+
+}
+
+main{
+  max-width: 800px;
+  width: 90%;
+  margin: auto;
+  padding: 40px;
+}
+
+img{
+   max-width: 200%;
+   max-height: 200%;
+   display:block;
+   margin:center;
+}
+
+
+
+.img_logo{
+
+  height: 180px;
+  width:  300px;
+  display:block;
+  margin:center;
+
+}
+
+.reloj {
+      text-align: center;
+      color: #4d4d4d;
+      font-size: 85px;
+      padding: 20px 0 20px 0;
+      margin: "10px";
+      
+    }
+    
+
+.nombre_emp {
+      text-align: center;
+      color: #4d4d4d;
+      font-size: 25px;
+      padding: 20px 0 20px 0;
+      
+    }
+
+
+.codigo_barra {
+      width: 300px;
+      margin: 0 auto;
+    }
+    
+    .codigo_barra input[type="text"]{
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #dddddd;
+      margin-bottom: 15px;
+      box-sizing:border-box;
+    }
+
+  
+
+
+
+    
+    
