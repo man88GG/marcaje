@@ -3,19 +3,20 @@ import logo from './img/logo.jpg';
 import Reloj from './componentes/Reloj';
 import Axios from 'axios'
 import './css/App.css';
+import { findAllByTestId } from '@testing-library/react';
 
 
 
 //hay un retraso de 30 seg al marcar con el lector
 //ver como se pasa la hora en una variable para el calculo de horas
-//borrar
-//borrar
+
 
 const date = new Date();
 
 function App (){
 
 const[mensajeNombre, setMensajeNombre] =useState("");
+const[mensajeApellido, setMensajeApellido] =useState("");
 
   //////
   const [state, setState] = useState('');
@@ -28,6 +29,7 @@ const[mensajeNombre, setMensajeNombre] =useState("");
       
     //se cambia el estado al nombre de la tecla que es presionada, en este caso es la tecla enter
       setState(event.key);
+      //window.location.href = window.location.href;
       //se llama a la funcion 
       busquedaCB();
       
@@ -58,6 +60,7 @@ const [codigo_barra, setCodigo_Barra] = useState("");
     return () => clearInterval(timer);
   }, []);
 /////
+
  
 //hace focus al texbox que obtendrá la variable del codigo barras
   const focusDiv = useRef();
@@ -74,17 +77,22 @@ useEffect(()=>{
 const ingresoDatos =()=>{
   Axios.post('http://localhost:3001/create', {  
 
+  
     codigo_barra: codigo_barra,
     //se llama a la fecha y obtiene solamente la hora
     hora_marcaje:date.toLocaleTimeString(),
-    
+    dia_marcaje: date.getDate(),
+    mes_marcaje: (date.getMonth()+1),
+    periodo_marcaje: date.getFullYear(),
 }).then(()=>{
+
+console.log(date.toLocaleString());
 console.log("conexion exitosa");
 console.log("hora:");
 console.log(date.toLocaleTimeString());
 console.log(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
 //refresca la pagina para liberar el cargado de memoria de las variables usadas
-//window.location.href = window.location.href;
+window.location.href = window.location.href;
   });
 };
 //
@@ -95,9 +103,15 @@ const ActualizarDatos = (codigo_barra)=>{
   Axios.put('http://localhost:3001/actualizar',{
     codigo_barra:codigo_barra,
     hora_marcaje:date.toLocaleTimeString(),
-  }).then(
-    
-  );  
+
+    dia_marcaje: date.getDate(),
+    mes_marcaje: (date.getMonth()+1),
+    periodo_marcaje: date.getFullYear(),
+
+  }).then(()=>{
+    window.location.href = window.location.href;
+  
+  });  
 };
 //
 
@@ -112,10 +126,12 @@ const busquedaCB = () => {
  if(response.data.message){
    //muestra mensaje de Empleado no encontrado
   setMensajeNombre(response.data.message)
- 
+  setMensajeApellido("")
+  window.location.href = window.location.href;
  }else{
    //obtiene de la posición 0 del array el elemento de la entidad que se declara luego del punto
-   setMensajeNombre(response.data[0].nombre_completo)
+   setMensajeNombre(response.data[0].nombre)
+   setMensajeApellido(response.data[0].apellido)
    ingresoDatos();
    //para la modificacion comparar codigo de barra y fecha actual, luego if para ver si el campo de entrada está en NULL
    //si es null ingreso hra entrada, de lo contrario ingreso hra salida.
@@ -138,7 +154,7 @@ const busquedaCB = () => {
       </div>
     </div>
     <div className="nombre_emp">
-    <h1>{mensajeNombre}</h1>
+    <h1>{mensajeNombre} {mensajeApellido}</h1>
     </div>
     
       <div className="codigo_barra">

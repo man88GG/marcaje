@@ -12,19 +12,32 @@ const db = mysql.createConnection({
     user:"root",
     host: "localhost",
     password: "",
-    database: "dbmarcaje",
+    database: "dbmarcaje2",
 });
 
 //insertar datos
 app.post("/create", (req,res) =>{
   
+    //datos para el marcaje
     const codigo_barra = req.body.codigo_barra;
     const hora_marcaje = req.body.hora_marcaje;
-    const id = 2;
 
+    //datos para la bitacora
+    const dia_marcaje= req.body.dia_marcaje;
+    const mes_marcaje= req.body.mes_marcaje;
+    const periodo_marcaje= req.body.periodo_marcaje;
+
+    const fecha_marcaje = (periodo_marcaje +"/"+ mes_marcaje+"/"+dia_marcaje);
+
+    //consulta ingreso de marcaje
     db.query(
-        "INSERT INTO marcaje (hra_entrada, hra_salida, fk_id_empleado) VALUES(?,?,?)",
-    [codigo_barra,hora_marcaje,id],  
+        "INSERT INTO marcaje (fecha_marcaje,hra_entrada, fk_id_empleado) VALUES(?,?,?)",
+    [fecha_marcaje,hora_marcaje,codigo_barra]);
+
+    //consulta para la bitacora
+    db.query(
+        "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje) VALUES(?,?)",
+    [fecha_marcaje +" "+ hora_marcaje,codigo_barra],
     (err,result)=>{
         if(err){
             console.log(err)
@@ -34,6 +47,7 @@ app.post("/create", (req,res) =>{
         }
     
     });
+    
 
 });
 
@@ -43,16 +57,27 @@ app.put("/actualizar", (req,res) =>{
     const codigo_barra = req.body.codigo_barra;
     const hora_marcaje = req.body.hora_marcaje;
 
-   db.query("UPDATE empleado SET tel_empleado = ? WHERE pk_id_empleado =?", [hora_marcaje, codigo_barra],
+    //datos para la bitacora
+    const dia_marcaje= req.body.dia_marcaje;
+    const mes_marcaje= req.body.mes_marcaje;
+    const periodo_marcaje= req.body.periodo_marcaje;
+
+    const fecha_marcaje = (periodo_marcaje +"/"+ mes_marcaje+"/"+dia_marcaje);
+
+   db.query("UPDATE marcaje SET hra_salida = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
    (err,result)=>{
-        if(err){
-            console.log(err);
-        }else{
-            res.send(result);
-            return result;
-        }
-    
-    });
+    if(err){
+        console.log(err)
+
+    }else{
+        res.send("Values inserted");
+    }
+
+});
+ //consulta para la bitacora
+   db.query(
+    "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje) VALUES(?,?)",
+[fecha_marcaje +" "+ hora_marcaje,codigo_barra]);
 
 });
 
@@ -60,7 +85,7 @@ app.put("/actualizar", (req,res) =>{
 app.post("/buscar",(req,res)=>{
     
    const codigo_barra = req.body.codigo_barra;
-    db.query("SELECT nombre_completo FROM empleado WHERE pk_id_empleado =?",[codigo_barra] , 
+    db.query("SELECT nombre, apellido FROM empleado WHERE id_empleado =?",[codigo_barra] , 
     (err,result)=>{
         if(err){
             res.send({err: err});
