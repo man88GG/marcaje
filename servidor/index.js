@@ -27,7 +27,7 @@ app.post("/create", (req,res) =>{
     const mes_marcaje= req.body.mes_marcaje;
     const periodo_marcaje= req.body.periodo_marcaje;
 
-    const fecha_marcaje = (periodo_marcaje +"/"+ mes_marcaje+"/"+dia_marcaje);
+    const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
     //consulta ingreso de marcaje
     db.query(
@@ -62,7 +62,7 @@ app.put("/actualizar", (req,res) =>{
     const mes_marcaje= req.body.mes_marcaje;
     const periodo_marcaje= req.body.periodo_marcaje;
 
-    const fecha_marcaje = (periodo_marcaje +"/"+ mes_marcaje+"/"+dia_marcaje);
+    const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
    db.query("UPDATE marcaje SET hra_salida = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
    (err,result)=>{
@@ -81,8 +81,8 @@ app.put("/actualizar", (req,res) =>{
 
 });
 
-//buscar datos
-app.post("/buscar",(req,res)=>{
+//buscar datos y verificar si existe el empleado
+app.post("/buscarEmpleado",(req,res)=>{
     
    const codigo_barra = req.body.codigo_barra;
     db.query("SELECT nombre, apellido FROM empleado WHERE id_empleado =?",[codigo_barra] , 
@@ -99,6 +99,34 @@ app.post("/buscar",(req,res)=>{
     });
 
 });
+
+
+//buscar datos y verificar si el empleado ya se registro de entrada
+app.post("/buscarFecha",(req,res)=>{
+    
+    const codigo_barra = req.body.codigo_barra;
+    const dia_marcaje= req.body.dia_marcaje;
+    const mes_marcaje= req.body.mes_marcaje;
+    const periodo_marcaje= req.body.periodo_marcaje;
+
+    const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
+
+     db.query("SELECT fecha_marcaje, hra_entrada FROM marcaje WHERE fecha_marcaje =? AND fk_id_empleado =?",[fecha_marcaje, codigo_barra] , 
+     (err,result)=>{
+         if(err){
+             res.send({err: err});
+         }
+             if(result.length > 0){
+                 //res.send(result);
+                 res.send(result);
+             }else{ 
+                 res.send({message:"Fecha No Registrada"});
+             }
+            
+     });
+ 
+ });
+
 
 app.listen(3001, ()=>{
     console.log("Server Running on port 3001");
