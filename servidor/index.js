@@ -111,7 +111,7 @@ app.post("/buscarFecha",(req,res)=>{
 
     const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
-     db.query("SELECT fecha_marcaje, hra_entrada FROM marcaje WHERE fecha_marcaje =? AND fk_id_empleado =?",[fecha_marcaje, codigo_barra] , 
+     db.query("SELECT fecha_marcaje, hra_entrada, hra_salida_alm, hra_entrada_alm,  hra_salida FROM marcaje WHERE fecha_marcaje =? AND fk_id_empleado =?",[fecha_marcaje, codigo_barra] , 
      (err,result)=>{
          if(err){
              res.send({err: err});
