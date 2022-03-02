@@ -34,7 +34,6 @@ app.post("/create", (req,res) =>{
         "INSERT INTO marcaje (fecha_marcaje,hra_entrada, fk_id_empleado) VALUES(?,?,?)",
     [fecha_marcaje,hora_marcaje,codigo_barra]);
 
-
     //consulta para la bitacora
     db.query(
         "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje) VALUES(?,?)",
@@ -49,20 +48,72 @@ app.post("/create", (req,res) =>{
     
     });
     
-
 });
 
-//actualizar datos
-app.put("/actualizar", (req,res) =>{
+
+app.put("/actualizarHraSalidaAlm", (req,res) =>{
   
     const codigo_barra = req.body.codigo_barra;
     const hora_marcaje = req.body.hora_marcaje;
-
     //datos para la bitacora
     const dia_marcaje= req.body.dia_marcaje;
     const mes_marcaje= req.body.mes_marcaje;
     const periodo_marcaje= req.body.periodo_marcaje;
+    const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
+   db.query("UPDATE marcaje SET hra_salida_alm = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
+   (err,result)=>{
+    if(err){
+        console.log(err)
+
+    }else{
+        res.send("Values inserted");
+    }
+
+});
+ //consulta para la bitacora
+   db.query(
+    "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje) VALUES(?,?)",
+[fecha_marcaje +" "+ hora_marcaje,codigo_barra]);
+
+});
+
+app.put("/actualizarHraEntradaAlm", (req,res) =>{
+  
+    const codigo_barra = req.body.codigo_barra;
+    const hora_marcaje = req.body.hora_marcaje;
+    //datos para la bitacora
+    const dia_marcaje= req.body.dia_marcaje;
+    const mes_marcaje= req.body.mes_marcaje;
+    const periodo_marcaje= req.body.periodo_marcaje;
+    const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
+
+   db.query("UPDATE marcaje SET hra_entrada_alm = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
+   (err,result)=>{
+    if(err){
+        console.log(err)
+
+    }else{
+        res.send("Values inserted");
+    }
+
+});
+ //consulta para la bitacora
+   db.query(
+    "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje) VALUES(?,?)",
+[fecha_marcaje +" "+ hora_marcaje,codigo_barra]);
+
+});
+
+//actualizar datos
+app.put("/actualizarHraSalida", (req,res) =>{
+  
+    const codigo_barra = req.body.codigo_barra;
+    const hora_marcaje = req.body.hora_marcaje;
+    //datos para la bitacora
+    const dia_marcaje= req.body.dia_marcaje;
+    const mes_marcaje= req.body.mes_marcaje;
+    const periodo_marcaje= req.body.periodo_marcaje;
     const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
    db.query("UPDATE marcaje SET hra_salida = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
@@ -82,7 +133,7 @@ app.put("/actualizar", (req,res) =>{
 
 });
 
-
+////////
 
 
 
