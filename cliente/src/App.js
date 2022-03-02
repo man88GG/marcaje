@@ -17,6 +17,10 @@ function App (){
 
 const[mensajeNombre, setMensajeNombre] =useState("");
 const[mensajeApellido, setMensajeApellido] =useState("");
+const[mensajeHoraEnt, setMensajeHoraEnt] =useState("");
+const[mensajeHoraSal, setMensajeHoraSal] =useState("");
+const[mensajeHoraEntAlm, setMensajeHoraEntAlm] =useState("");
+const[mensajeHoraSalAlm, setMensajeHoraSalAlm] =useState("");
 
   //////
   const [state, setState] = useState('');
@@ -72,7 +76,6 @@ useEffect(()=>{
 //contendrá la busqueda del codigo barra
 //luego de busqueda se hará un if para saber si se ingresa o modifica el campo
 
-
 //insertar datos
 const ingresoDatos =()=>{
   Axios.post('http://localhost:3001/create', {  
@@ -117,11 +120,10 @@ const ActualizarDatos = (codigo_barra)=>{
 
 //buscar datos
 const busquedaCB = () => {
-  Axios.post('http://localhost:3001/buscar',{
+  Axios.post('http://localhost:3001/buscarEmpleado',{
     codigo_barra:codigo_barra
   
 }).then((response)=>{
-
 
  if(response.data.message){
    //muestra mensaje de Empleado no encontrado
@@ -129,19 +131,93 @@ const busquedaCB = () => {
   setMensajeApellido("")
   window.location.href = window.location.href;
  }else{
+
    //obtiene de la posición 0 del array el elemento de la entidad que se declara luego del punto
    setMensajeNombre(response.data[0].nombre)
    setMensajeApellido(response.data[0].apellido)
+
    ingresoDatos();
    //para la modificacion comparar codigo de barra y fecha actual, luego if para ver si el campo de entrada está en NULL
    //si es null ingreso hra entrada, de lo contrario ingreso hra salida.
    ActualizarDatos(codigo_barra);
+
+
+   
  }
 
   });
 
 };
 //
+
+
+const busquedaPr = () => {
+  Axios.post('http://localhost:3001/buscarFecha',{
+    codigo_barra:codigo_barra,
+    dia_marcaje: date.getDate(),
+    mes_marcaje: (date.getMonth()+1),
+    periodo_marcaje: date.getFullYear(),
+
+}).then((response)=>{
+
+ if(response.data.message){
+   //muestra mensaje de Empleado no encontrado
+  setMensajeNombre(response.data.message);
+  //setMensajeApellido("")
+  //window.location.href = window.location.href;
+ }else{
+   //obtiene de la posición 0 del array el elemento de la entidad que se declara luego del punto
+   //setMensajeNombre(response.data.message)
+   //setMensajeApellido(response.data[0].apellido)
+   setMensajeNombre(response.data[0].hra_entrada);
+/////
+   setMensajeHoraEnt(response.data[0].hra_entrada)
+   setMensajeHoraSalAlm(response.data[0].hra_salida_alm)
+   setMensajeHoraEntAlm(response.data[0].hra_entrada_alm)
+   setMensajeHoraSal(response.data[0].hra_salida)
+
+if (mensajeHoraEnt != null && mensajeHoraSalAlm == null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
+console.log("Ingreso mensaje hora Salida Almuerzo: 1");
+}else{
+  if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
+    console.log("Ingreso mensaje hora Entrada Almuerzo: 2");
+}else{
+  if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal == null){
+    console.log("Ingreso mensaje hora Salida: 3");
+    }else{
+      if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal != null){
+        console.log("Ya se han realizado todos los marcajes del día: 4");
+      }else{
+        console.log("El empleado ha realizado un marcaje erróneo 1072022");
+      }
+    }
+  }
+}
+//////
+
+   //se obtiene el dato null pero luego del elemento que lo tiene ej:
+   //4 tiene null pero no se muestra, 5 no tiene null pero se muestra el null del 4
+    if(mensajeNombre === null){
+    console.log("obtiene dato NULL");
+    }else{
+    console.log("valor");
+    //console.log(setMensajeNombre);
+   
+    }
+    //setMensajeNombre(response.data[0].hra_entrada)
+
+    //ingresoDatos();
+    //para la modificacion comparar codigo de barra y fecha actual, luego if para ver si el campo de entrada está en NULL
+    //si es null ingreso hra entrada, de lo contrario ingreso hra salida.
+    //ActualizarDatos(codigo_barra);
+    }
+    console.log(response);
+    });
+
+};
+
+
+
 
   return(
     <main>
@@ -163,7 +239,10 @@ const busquedaCB = () => {
       <div>
         <button id="probar" onClick={busquedaCB}>Prueba</button>
       </div>
-  
+  <div>
+  <button id="probar2" onClick={busquedaPr}>Prueba2</button>
+      
+  </div>
 
       
 
