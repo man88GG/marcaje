@@ -34,6 +34,7 @@ app.post("/create", (req,res) =>{
         "INSERT INTO marcaje (fecha_marcaje,hra_entrada, fk_id_empleado) VALUES(?,?,?)",
     [fecha_marcaje,hora_marcaje,codigo_barra]);
 
+
     //consulta para la bitacora
     db.query(
         "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje) VALUES(?,?)",
@@ -81,6 +82,10 @@ app.put("/actualizar", (req,res) =>{
 
 });
 
+
+
+
+
 //buscar datos y verificar si existe el empleado
 app.post("/buscarEmpleado",(req,res)=>{
     
@@ -111,7 +116,7 @@ app.post("/buscarFecha",(req,res)=>{
 
     const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
-     db.query("SELECT fecha_marcaje, hra_entrada, hra_salida_alm, hra_entrada_alm,  hra_salida FROM marcaje WHERE fecha_marcaje =? AND fk_id_empleado =?",[fecha_marcaje, codigo_barra] , 
+     db.query("SELECT fecha_marcaje, hra_entrada, hra_salida_alm, hra_entrada_alm, hra_salida FROM marcaje WHERE fecha_marcaje =? AND fk_id_empleado =?",[fecha_marcaje, codigo_barra] , 
      (err,result)=>{
          if(err){
              res.send({err: err});
