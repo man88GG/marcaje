@@ -101,9 +101,41 @@ window.location.href = window.location.href;
 //
 
 //
-const ActualizarDatos = (codigo_barra)=>{
+const ActualizarDatosHraSalidaAlm = (codigo_barra)=>{
 
-  Axios.put('http://localhost:3001/actualizar',{
+  Axios.put('http://localhost:3001/actualizarHraSalidaAlm',{
+    codigo_barra:codigo_barra,
+    hora_marcaje:date.toLocaleTimeString(),
+
+    dia_marcaje: date.getDate(),
+    mes_marcaje: (date.getMonth()+1),
+    periodo_marcaje: date.getFullYear(),
+
+  }).then(()=>{
+    window.location.href = window.location.href;
+  
+  });  
+};
+
+const ActualizarDatosHraEntradaAlm = (codigo_barra)=>{
+
+  Axios.put('http://localhost:3001/actualizarHraEntradaAlm',{
+    codigo_barra:codigo_barra,
+    hora_marcaje:date.toLocaleTimeString(),
+
+    dia_marcaje: date.getDate(),
+    mes_marcaje: (date.getMonth()+1),
+    periodo_marcaje: date.getFullYear(),
+
+  }).then(()=>{
+    window.location.href = window.location.href;
+  
+  });  
+};
+
+const ActualizarDatosHraSalida = (codigo_barra)=>{
+
+  Axios.put('http://localhost:3001/actualizarHraSalida',{
     codigo_barra:codigo_barra,
     hora_marcaje:date.toLocaleTimeString(),
 
@@ -139,7 +171,7 @@ const busquedaCB = () => {
    ingresoDatos();
    //para la modificacion comparar codigo de barra y fecha actual, luego if para ver si el campo de entrada está en NULL
    //si es null ingreso hra entrada, de lo contrario ingreso hra salida.
-   ActualizarDatos(codigo_barra);
+   //ActualizarDatos(codigo_barra);
 
 
    
@@ -178,12 +210,15 @@ const busquedaPr = () => {
 
 if (mensajeHoraEnt != null && mensajeHoraSalAlm == null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
 console.log("Ingreso mensaje hora Salida Almuerzo: 1");
+  ActualizarDatosHraSalidaAlm(codigo_barra);
 }else{
   if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
     console.log("Ingreso mensaje hora Entrada Almuerzo: 2");
+    ActualizarDatosHraEntradaAlm(codigo_barra);
 }else{
   if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal == null){
     console.log("Ingreso mensaje hora Salida: 3");
+    ActualizarDatosHraSalida(codigo_barra);
     }else{
       if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal != null){
         console.log("Ya se han realizado todos los marcajes del día: 4");
