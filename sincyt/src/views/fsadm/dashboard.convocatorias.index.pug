@@ -1,0 +1,14 @@
+html
+    head
+        title="DASHBOAR DE CONVOCATORIAS"
+        script
+            //include jquery.min.js
+        script
+           include jquery.easyui.min.js
+        script
+           // include dashboard.convocatorias.index.js
+    body(class='container')
+        h1=mensaje
+        form(class="easyui-form", enctype= "multipart/form-data", id='formularioCarga', method="post" typeof="jsonp")
+            INPUT(TYPE='easyui-filebox', name='inputArchivo')
+        button( value='Prueba de Subida Externa' onclick='subirArchivo()')="INICIO"

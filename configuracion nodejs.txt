@@ -1,0 +1,30 @@
+comandos node.js
+
+rm -rf node_modules
+npm install -g npm@latest
+npm i core-util-is
+
+npm install --save-dev typescript
+npm install --save-dev tslint
+
+/*
+* importar la base de datos a modelo
+*/
+
+npm install -g mysql
+npm i -g typeorm-model-generator
+typeorm-model-generator -h 172.16.1.14 -d sincyt -p 3306 -u developer -x s3rv1c10s..* -e mysql
+
+npm i -g typeorm
+
+/**
+ * Modulo de mongo
+ */
+
+npm add @types/mongoose
+
+/**
+  * Run 
+  */
+
+ts-node-dev .

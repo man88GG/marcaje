@@ -1,0 +1,24 @@
+{
+   "type": "mysql",
+   "host": "sincytbd",
+   "port": 3306,
+   "username": "developer",
+   "password": "s3rv1c10s..*",
+   "database": "sincyt",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "entities/*.ts"
+   ],
+   "migrations": [
+      "src/migration/*.ts"
+   ],
+   "subscribers": [
+      "src/subscriber/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "output/entities",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+   }
+}

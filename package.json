@@ -1,0 +1,15 @@
+{
+  "name": "api_sincyt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "blucero@172.16.1.80:/repositorios/api_sincyt"
+  },
+  "author": "",
+  "license": "ISC"
+}

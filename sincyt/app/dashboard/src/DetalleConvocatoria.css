@@ -1,0 +1,106 @@
+.divInformativo{
+    /*H1*/
+    background-color: red;
+    width: 70%;
+    float:left;
+    height: 100%;
+}
+
+.divDetalle{
+    /*H2*/
+    background-color: blue;
+    width: 50%;
+    float:left;
+    height: 100%;
+}
+
+.divTematicas{
+
+    background-color: purple;
+    width: 50%;
+    float: left;
+    height: 100%;
+}
+
+.divLineas{
+    background-color:  black;
+    width: 30%;
+    float: left;
+    height: 100%;
+}
+
+.divTableroDetalle{
+    width: 100%;
+    /* background-color: #ccf3ff;
+    background-color: #282c34;
+    background: linear-gradient(45deg, #2196F3 30%, #21CBF3 50%);
+    background: linear-gradient(45deg, #2196F3 30%, #21CBF3 50%);
+     */
+    background: linear-gradient(45deg, #1e3684 20%, #ececec 50%);
+    padding: 5px 5px 5px 5px;
+    max-height: calc(100vh - 4.8rem);
+    min-height: calc(100vh - 4.8rem);
+    height: calc(100vh - 4.8rem);
+    overflow-y: scroll;
+}
+
+.divContenedorDetalleSuperior{
+    display: inline-block;
+    width: 100%;
+    float: left;
+    height: 30vh;
+}
+
+.divContenedorDetalleInferior{
+    display: inline-block;
+    width: 100%;
+    float: left;
+    height: 54vh;
+}
+
+.cajasTexto{
+    font-size: 1px;
+}
+
+.datagrid-header .datagrid-cell{
+    white-space: normal;
+    text-align: center;
+}
+
+.datagrid-row .datagrid-cell{
+    word-wrap: break-word;
+    font-weight: normal;
+    white-space: normal;
+    font-size: 11px;
+}
+
+.tituloDetallesConvocatoria{
+    background-color: #1e3684;
+}
+
+.paperDetallado{
+    height: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    width: 95%;
+}
+
+.scrollPaperDetalle{
+    height: calc(100% - 3rem);
+    max-height: calc(100% - 3rem);
+    /*height: calc(100% - 0.5rem);*/
+    width: 100%;
+}
+
+/* {}style={{height: '85%', maxHeight : '85%', width : '95%', marginTop :'0.35rem'}}*/
+
+.scrollBarInformacionConvocatoria{
+    height: calc(100% - 3rem);
+    max-height: calc(100% - 3rem);
+    width: 100%;
+}
+
+.divPrincipalDetalles{
+    height: 100%;
+    overflow-y: -moz-scrollbars-vertical;
+}
