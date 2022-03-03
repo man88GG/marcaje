@@ -8,8 +8,7 @@ import { findAllByTestId } from '@testing-library/react';
 
 
 //hay un retraso de 30 seg al marcar con el lector
-//ver como se pasa la hora en una variable para el calculo de horas
-
+//ver como obtener los valores al realizar la busqueda la primera vez
 
 const date = new Date();
 
@@ -21,7 +20,7 @@ const[mensajeHoraEnt, setMensajeHoraEnt] =useState("");
 const[mensajeHoraSal, setMensajeHoraSal] =useState("");
 const[mensajeHoraEntAlm, setMensajeHoraEntAlm] =useState("");
 const[mensajeHoraSalAlm, setMensajeHoraSalAlm] =useState("");
-
+const total_horas =0;
   //////
   const [state, setState] = useState('');
     
@@ -78,9 +77,7 @@ useEffect(()=>{
 
 //insertar datos
 const ingresoDatos =()=>{
-  Axios.post('http://localhost:3001/create', {  
-
-  
+  Axios.post('http://localhost:3001/create', {    
     codigo_barra: codigo_barra,
     //se llama a la fecha y obtiene solamente la hora
     hora_marcaje:date.toLocaleTimeString(),
@@ -110,7 +107,7 @@ const ActualizarDatosHraSalidaAlm = (codigo_barra)=>{
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
     periodo_marcaje: date.getFullYear(),
-
+  
   }).then(()=>{
     window.location.href = window.location.href;
   
@@ -172,16 +169,31 @@ const busquedaCB = () => {
    //para la modificacion comparar codigo de barra y fecha actual, luego if para ver si el campo de entrada está en NULL
    //si es null ingreso hra entrada, de lo contrario ingreso hra salida.
    //ActualizarDatos(codigo_barra);
-
-
-   
- }
-
+  }
   });
-
 };
 //
+//
+const CalculoTiempoDiario =()=>{
 
+  console.log("Hora E: " + mensajeHoraEnt);
+  console.log("Hora S: " + mensajeHoraSal);
+  var p1 = (mensajeHoraSal);
+  var p2 = (mensajeHoraEnt);
+  var hora1 = (p1).split(":"),
+      hora2 = (p2).split(":"),
+      t1 = new Date(),
+      t2 = new Date();
+//Se establecen en arreglos los 3 parametros
+t1.setHours(hora1[0], hora1[1], hora1[2]);
+t2.setHours(hora2[0], hora2[1], hora2[2]);
+//Calculo de tiempo laborado diariamente
+t1.setHours(t1.getHours() - t2.getHours(), t1.getMinutes() - t2.getMinutes(), t1.getSeconds() - t2.getSeconds());
+//Mensaje de total de Horas
+console.log("Total de Tiempo Laborado el día de hoy: " + (t1.getHours() ? t1.getHours() + (t1.getHours() > 1 ? " horas" : " hora") : "") + (t1.getMinutes() ? ", " + t1.getMinutes() + (t1.getMinutes() > 1 ? " minutos" : " minuto") : "") + (t1.getSeconds() ? (t1.getHours() || t1.getMinutes() ? " y " : "") + t1.getSeconds() + (t1.getSeconds() > 1 ? " segundos" : " segundo") : ""));
+
+}
+//
 
 const busquedaPr = () => {
   Axios.post('http://localhost:3001/buscarFecha',{
@@ -201,27 +213,35 @@ const busquedaPr = () => {
    //obtiene de la posición 0 del array el elemento de la entidad que se declara luego del punto
    //setMensajeNombre(response.data.message)
    //setMensajeApellido(response.data[0].apellido)
+   
    setMensajeNombre(response.data[0].hra_entrada);
 /////
    setMensajeHoraEnt(response.data[0].hra_entrada)
    setMensajeHoraSalAlm(response.data[0].hra_salida_alm)
    setMensajeHoraEntAlm(response.data[0].hra_entrada_alm)
    setMensajeHoraSal(response.data[0].hra_salida)
-
+   CalculoTiempoDiario();
 if (mensajeHoraEnt != null && mensajeHoraSalAlm == null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
 console.log("Ingreso mensaje hora Salida Almuerzo: 1");
-  ActualizarDatosHraSalidaAlm(codigo_barra);
+  //ActualizarDatosHraSalidaAlm(codigo_barra);
 }else{
   if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
     console.log("Ingreso mensaje hora Entrada Almuerzo: 2");
-    ActualizarDatosHraEntradaAlm(codigo_barra);
+    //ActualizarDatosHraEntradaAlm(codigo_barra);
 }else{
   if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal == null){
     console.log("Ingreso mensaje hora Salida: 3");
-    ActualizarDatosHraSalida(codigo_barra);
+
+
+    //ActualizarDatosHraSalida(codigo_barra);
     }else{
       if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal != null){
         console.log("Ya se han realizado todos los marcajes del día: 4");
+        
+
+        console.log(mensajeHoraEnt);
+        console.log(mensajeHoraSal);
+        
       }else{
         console.log("El empleado ha realizado un marcaje erróneo 1072022");
       }
@@ -251,9 +271,6 @@ console.log("Ingreso mensaje hora Salida Almuerzo: 1");
 
 };
 
-
-
-
   return(
     <main>
     <div className ="img_logo">
@@ -267,7 +284,6 @@ console.log("Ingreso mensaje hora Salida Almuerzo: 1");
     <div className="nombre_emp">
     <h1>{mensajeNombre} {mensajeApellido}</h1>
     </div>
-    
       <div className="codigo_barra">
         <input type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => captura(e)}     onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
       </div>
@@ -276,12 +292,9 @@ console.log("Ingreso mensaje hora Salida Almuerzo: 1");
       </div>
   <div>
   <button id="probar2" onClick={busquedaPr}>Prueba2</button>
-      
   </div>
-
-      
-
     </main>
   )
 }
+
   export default App;
