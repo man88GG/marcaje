@@ -4,7 +4,8 @@ import Reloj from './componentes/Reloj';
 import Axios from 'axios'
 import './css/App.css';
 import { findAllByTestId } from '@testing-library/react';
-
+import axios from 'axios';
+import {useParams, Link } from "react-router-dom";
 
 
 //hay un retraso de 30 seg al marcar con el lector
@@ -21,10 +22,21 @@ const[mensajeHoraSal, setMensajeHoraSal] =useState("");
 const[mensajeHoraEntAlm, setMensajeHoraEntAlm] =useState("");
 const[mensajeHoraSalAlm, setMensajeHoraSalAlm] =useState("");
 const total_horas =0;
-  //////
-  const [state, setState] = useState('');
-    
 
+  ////////
+  const [state, setState] = useState('');
+
+  //
+  const [busuario,setBusuario]=useState({});
+  const {idbuscar} = useParams();
+useEffect(()=>{
+  axios.get(`http://localhost:3001/buscarFecha/${idbuscar}`).then((resp)=> setBusuario({...resp.data[0]}));
+},[idbuscar]);
+
+////////
+
+
+//
   const captura = (event) => {
     
     //condicion para la busqueda e ingreso de datos cuando el lector manda la señal
@@ -97,6 +109,8 @@ window.location.href = window.location.href;
 };
 //
 
+
+
 //
 const ActualizarDatosHraSalidaAlm = (codigo_barra)=>{
 
@@ -108,7 +122,7 @@ const ActualizarDatosHraSalidaAlm = (codigo_barra)=>{
     mes_marcaje: (date.getMonth()+1),
     periodo_marcaje: date.getFullYear(),
   
-  }).then(()=>{
+  }).then((response)=>{
     window.location.href = window.location.href;
   
   });  
@@ -195,6 +209,7 @@ console.log("Total de Tiempo Laborado el día de hoy: " + (t1.getHours() ? t1.ge
 }
 //
 
+
 const busquedaPr = () => {
   Axios.post('http://localhost:3001/buscarFecha',{
     codigo_barra:codigo_barra,
@@ -220,27 +235,26 @@ const busquedaPr = () => {
    setMensajeHoraSalAlm(response.data[0].hra_salida_alm)
    setMensajeHoraEntAlm(response.data[0].hra_entrada_alm)
    setMensajeHoraSal(response.data[0].hra_salida)
-   CalculoTiempoDiario();
+   
 if (mensajeHoraEnt != null && mensajeHoraSalAlm == null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
 console.log("Ingreso mensaje hora Salida Almuerzo: 1");
   //ActualizarDatosHraSalidaAlm(codigo_barra);
 }else{
   if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
     console.log("Ingreso mensaje hora Entrada Almuerzo: 2");
-    //ActualizarDatosHraEntradaAlm(codigo_barra);
+  //ActualizarDatosHraEntradaAlm(codigo_barra);
 }else{
   if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal == null){
     console.log("Ingreso mensaje hora Salida: 3");
 
-
-    //ActualizarDatosHraSalida(codigo_barra);
+  //ActualizarDatosHraSalida(codigo_barra);
     }else{
       if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal != null){
         console.log("Ya se han realizado todos los marcajes del día: 4");
         
-
         console.log(mensajeHoraEnt);
         console.log(mensajeHoraSal);
+        CalculoTiempoDiario();
         
       }else{
         console.log("El empleado ha realizado un marcaje erróneo 1072022");
@@ -292,6 +306,7 @@ console.log("Ingreso mensaje hora Salida Almuerzo: 1");
       </div>
   <div>
   <button id="probar2" onClick={busquedaPr}>Prueba2</button>
+  <span>{idbuscar}</span>
   </div>
     </main>
   )
