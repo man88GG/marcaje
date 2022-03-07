@@ -6,7 +6,6 @@ import './css/App.css';
 import { findAllByTestId } from '@testing-library/react';
 
 
-
 //hay un retraso de 30 seg al marcar con el lector
 //ver como obtener los valores al realizar la busqueda la primera vez
 
@@ -220,6 +219,7 @@ const busquedaPr = () => {
    setMensajeHoraSalAlm(response.data[0].hra_salida_alm)
    setMensajeHoraEntAlm(response.data[0].hra_entrada_alm)
    setMensajeHoraSal(response.data[0].hra_salida)
+   
    CalculoTiempoDiario();
 if (mensajeHoraEnt != null && mensajeHoraSalAlm == null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
 console.log("Ingreso mensaje hora Salida Almuerzo: 1");
@@ -241,7 +241,7 @@ console.log("Ingreso mensaje hora Salida Almuerzo: 1");
 
         console.log(mensajeHoraEnt);
         console.log(mensajeHoraSal);
-        
+        //CalculoTiempoDiario();//
       }else{
         console.log("El empleado ha realizado un marcaje erróneo 1072022");
       }

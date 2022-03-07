@@ -55,13 +55,14 @@ app.put("/actualizarHraSalidaAlm", (req,res) =>{
   
     const codigo_barra = req.body.codigo_barra;
     const hora_marcaje = req.body.hora_marcaje;
+    const mensajeNombre= req.body.mensajeNombre;
     //datos para la bitacora
     const dia_marcaje= req.body.dia_marcaje;
     const mes_marcaje= req.body.mes_marcaje;
     const periodo_marcaje= req.body.periodo_marcaje;
     const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
-   db.query("UPDATE marcaje SET hra_salida_alm = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
+   db.query("UPDATE marcaje SET hra_salida_alm = ?, horas_laboradas = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra, mensajeNombre],
    (err,result)=>{
     if(err){
         console.log(err)
@@ -134,7 +135,6 @@ app.put("/actualizarHraSalida", (req,res) =>{
 });
 
 ////////
-
 
 
 //buscar datos y verificar si existe el empleado
