@@ -9,17 +9,28 @@ import { findAllByTestId } from '@testing-library/react';
 //hay un retraso de 30 seg al marcar con el lector
 //ver como obtener los valores al realizar la busqueda la primera vez
 
+
+//buscar fecha actual
+//si no hay la inserta y busca empleado (o se llama a si misma la funcion)
+//si hay nomas busca empleado
+//si no existe empleado, mostrar mensaje que no existe
+// si existe, comparar los nulls de las fechas para saber donde insertar
+
+
 const date = new Date();
 
 function App (){
 
-const[mensajeNombre, setMensajeNombre] =useState("");
-const[mensajeApellido, setMensajeApellido] =useState("");
-const[mensajeHoraEnt, setMensajeHoraEnt] =useState("");
-const[mensajeHoraSal, setMensajeHoraSal] =useState("");
-const[mensajeHoraEntAlm, setMensajeHoraEntAlm] =useState("");
-const[mensajeHoraSalAlm, setMensajeHoraSalAlm] =useState("");
+const[mensajeNombre, setMensajeNombre] =useState("a");
+const[mensajeApellido, setMensajeApellido] =useState("a");
+const[mensajeHoraEnt, setMensajeHoraEnt] =useState("a");
+const[mensajeHoraSal, setMensajeHoraSal] =useState("a");
+const[mensajeHoraEntAlm, setMensajeHoraEntAlm] =useState("a");
+const[mensajeHoraSalAlm, setMensajeHoraSalAlm] =useState("a");
 const total_horas =0;
+
+
+
   //////
   const [state, setState] = useState('');
     
@@ -33,7 +44,7 @@ const total_horas =0;
       setState(event.key);
       //window.location.href = window.location.href;
       //se llama a la funcion 
-      busquedaCB();
+      BusquedaEmpleado();
       
     }
     
@@ -71,19 +82,25 @@ useEffect(()=>{
 },[focusDiv]);
 //
 
-//contendrá la busqueda del codigo barra
-//luego de busqueda se hará un if para saber si se ingresa o modifica el campo
 
 //insertar datos
 const ingresoDatos =()=>{
-  Axios.post('http://localhost:3001/create', {    
+  Axios.post('http://localhost:3001/DatosMarcajeEmpleado', {    
     codigo_barra: codigo_barra,
-    //se llama a la fecha y obtiene solamente la hora
     hora_marcaje:date.toLocaleTimeString(),
+    //se llama a la fecha 
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
     periodo_marcaje: date.getFullYear(),
 }).then(()=>{
+
+console.log(mensajeNombre);
+console.log(mensajeApellido);
+console.log(mensajeHoraEnt);
+console.log(mensajeHoraSal);
+console.log(mensajeHoraEntAlm);
+console.log(mensajeHoraSalAlm);
+
 
 console.log(date.toLocaleString());
 console.log("conexion exitosa");
@@ -96,20 +113,42 @@ window.location.href = window.location.href;
 };
 //
 
+
+//insertar datos
+const Bitacora =()=>{
+  Axios.post('http://localhost:3001/bitacora', {    
+    codigo_barra: codigo_barra,
+    //se llama a la fecha y obtiene solamente la hora
+    hora_marcaje:date.toLocaleTimeString(),
+    dia_marcaje: date.getDate(),
+    mes_marcaje: (date.getMonth()+1),
+    periodo_marcaje: date.getFullYear(),
+}).then(()=>{
+
+  });
+};
+//
+
+
 //
 const ActualizarDatosHraSalidaAlm = (codigo_barra)=>{
 
   Axios.put('http://localhost:3001/actualizarHraSalidaAlm',{
     codigo_barra:codigo_barra,
     hora_marcaje:date.toLocaleTimeString(),
-
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
     periodo_marcaje: date.getFullYear(),
   
   }).then(()=>{
-    window.location.href = window.location.href;
-  
+    //window.location.href = window.location.href;
+    console.log(mensajeNombre);
+    console.log(mensajeApellido);
+    console.log(mensajeHoraEnt);
+    console.log(mensajeHoraSal);
+    console.log(mensajeHoraEntAlm);
+    console.log(mensajeHoraSalAlm);
+    
   });  
 };
 
@@ -124,7 +163,14 @@ const ActualizarDatosHraEntradaAlm = (codigo_barra)=>{
     periodo_marcaje: date.getFullYear(),
 
   }).then(()=>{
-    window.location.href = window.location.href;
+    //window.location.href = window.location.href;
+    console.log(mensajeNombre);
+console.log(mensajeApellido);
+console.log(mensajeHoraEnt);
+console.log(mensajeHoraSal);
+console.log(mensajeHoraEntAlm);
+console.log(mensajeHoraSalAlm);
+ 
   
   });  
 };
@@ -140,39 +186,110 @@ const ActualizarDatosHraSalida = (codigo_barra)=>{
     periodo_marcaje: date.getFullYear(),
 
   }).then(()=>{
-    window.location.href = window.location.href;
-  
+    //window.location.href = window.location.href;
+    console.log(mensajeNombre);
+    console.log(mensajeApellido);
+    console.log(mensajeHoraEnt);
+    console.log(mensajeHoraSal);
+    console.log(mensajeHoraEntAlm);
+    console.log(mensajeHoraSalAlm);
+     
   });  
 };
 //
 
 //buscar datos
-const busquedaCB = () => {
+const BusquedaEmpleado = () => {
   Axios.post('http://localhost:3001/buscarEmpleado',{
-    codigo_barra:codigo_barra
-  
+    codigo_barra:codigo_barra,
+
 }).then((response)=>{
 
- if(response.data.message){
-   //muestra mensaje de Empleado no encontrado
-  setMensajeNombre(response.data.message)
-  setMensajeApellido("")
-  window.location.href = window.location.href;
- }else{
+    if(response.data.message){
+        //muestra mensaje de Empleado no encontrado
+        setMensajeNombre(response.data.message)
+        setMensajeApellido("")
+       }else{
 
-   //obtiene de la posición 0 del array el elemento de la entidad que se declara luego del punto
-   setMensajeNombre(response.data[0].nombre)
-   setMensajeApellido(response.data[0].apellido)
+        BuscarFechaActual();
+        setMensajeNombre(response.data[0].nombre)
+        setMensajeApellido(response.data[0].apellido)
+       }
 
-   ingresoDatos();
-   //para la modificacion comparar codigo de barra y fecha actual, luego if para ver si el campo de entrada está en NULL
-   //si es null ingreso hra entrada, de lo contrario ingreso hra salida.
-   //ActualizarDatos(codigo_barra);
-  }
-  });
-};
+       });
+    };
 //
-//
+
+//buscar datos
+const BuscarFechaActual = () => {
+    Axios.post('http://localhost:3001/buscarFecha',{
+        codigo_barra:codigo_barra,
+        dia_marcaje: date.getDate(),
+        mes_marcaje: (date.getMonth()+1),
+        periodo_marcaje: date.getFullYear(),
+
+  }).then((response)=>{
+  
+    if(response.data.message){
+    
+        //Se inserta Hora Entrada
+        console.log("Ingreso Marcaje: 0");
+        ingresoDatos();
+        Bitacora();
+        
+
+       }else{
+
+          // setMensajeNombre(response.data[0].hra_entrada);
+         /////
+            setMensajeHoraEnt(response.data[0].hra_entrada)
+            setMensajeHoraSalAlm(response.data[0].hra_salida_alm)
+            setMensajeHoraEntAlm(response.data[0].hra_entrada_alm)
+            setMensajeHoraSal(response.data[0].hra_salida)
+            
+           if (mensajeHoraEnt != null && mensajeHoraSalAlm == null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
+         console.log("Ingreso mensaje hora Salida Almuerzo: 1");
+             ActualizarDatosHraSalidaAlm(codigo_barra);
+             Bitacora();
+         }else{
+           if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
+             console.log("Ingreso mensaje hora Entrada Almuerzo: 2");
+             ActualizarDatosHraEntradaAlm(codigo_barra);
+             Bitacora();
+         }else{
+           if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal == null){
+             console.log("Ingreso mensaje hora Salida: 3");
+         
+             ActualizarDatosHraSalida(codigo_barra);
+             //CalculoTiempoDiario();
+             Bitacora();
+             console.log("Marcajes posibles realizados");
+             }else{
+               if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal != null){
+                 console.log("Ya se han realizado todos los marcajes del día: 4");
+                 
+                 console.log(mensajeNombre);
+console.log(mensajeApellido);
+console.log(mensajeHoraEnt);
+console.log(mensajeHoraSal);
+console.log(mensajeHoraEntAlm);
+console.log(mensajeHoraSalAlm);
+
+            
+               }else{
+                 console.log("El empleado ha realizado un marcaje erróneo 1072022");
+                 
+               }
+             }
+           }
+         }
+         
+        }
+
+    });
+  };
+
+
 const CalculoTiempoDiario =()=>{
 
   console.log("Hora E: " + mensajeHoraEnt);
@@ -192,84 +309,6 @@ t1.setHours(t1.getHours() - t2.getHours(), t1.getMinutes() - t2.getMinutes(), t1
 console.log("Total de Tiempo Laborado el día de hoy: " + (t1.getHours() ? t1.getHours() + (t1.getHours() > 1 ? " horas" : " hora") : "") + (t1.getMinutes() ? ", " + t1.getMinutes() + (t1.getMinutes() > 1 ? " minutos" : " minuto") : "") + (t1.getSeconds() ? (t1.getHours() || t1.getMinutes() ? " y " : "") + t1.getSeconds() + (t1.getSeconds() > 1 ? " segundos" : " segundo") : ""));
 
 }
-//
-
-const busquedaPr = () => {
-  Axios.post('http://localhost:3001/buscarFecha',{
-    codigo_barra:codigo_barra,
-    dia_marcaje: date.getDate(),
-    mes_marcaje: (date.getMonth()+1),
-    periodo_marcaje: date.getFullYear(),
-
-}).then((response)=>{
-
- if(response.data.message){
-   //muestra mensaje de Empleado no encontrado
-  setMensajeNombre(response.data.message);
-  //setMensajeApellido("")
-  //window.location.href = window.location.href;
- }else{
-   //obtiene de la posición 0 del array el elemento de la entidad que se declara luego del punto
-   //setMensajeNombre(response.data.message)
-   //setMensajeApellido(response.data[0].apellido)
-   
-   setMensajeNombre(response.data[0].hra_entrada);
-/////
-   setMensajeHoraEnt(response.data[0].hra_entrada)
-   setMensajeHoraSalAlm(response.data[0].hra_salida_alm)
-   setMensajeHoraEntAlm(response.data[0].hra_entrada_alm)
-   setMensajeHoraSal(response.data[0].hra_salida)
-   
-   CalculoTiempoDiario();
-if (mensajeHoraEnt != null && mensajeHoraSalAlm == null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
-console.log("Ingreso mensaje hora Salida Almuerzo: 1");
-  //ActualizarDatosHraSalidaAlm(codigo_barra);
-}else{
-  if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
-    console.log("Ingreso mensaje hora Entrada Almuerzo: 2");
-    //ActualizarDatosHraEntradaAlm(codigo_barra);
-}else{
-  if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal == null){
-    console.log("Ingreso mensaje hora Salida: 3");
-
-
-    //ActualizarDatosHraSalida(codigo_barra);
-    }else{
-      if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm != null && mensajeHoraSal != null){
-        console.log("Ya se han realizado todos los marcajes del día: 4");
-        
-
-        console.log(mensajeHoraEnt);
-        console.log(mensajeHoraSal);
-        //CalculoTiempoDiario();//
-      }else{
-        console.log("El empleado ha realizado un marcaje erróneo 1072022");
-      }
-    }
-  }
-}
-//////
-
-   //se obtiene el dato null pero luego del elemento que lo tiene ej:
-   //4 tiene null pero no se muestra, 5 no tiene null pero se muestra el null del 4
-    if(mensajeNombre === null){
-    console.log("obtiene dato NULL");
-    }else{
-    console.log("valor");
-    //console.log(setMensajeNombre);
-   
-    }
-    //setMensajeNombre(response.data[0].hra_entrada)
-
-    //ingresoDatos();
-    //para la modificacion comparar codigo de barra y fecha actual, luego if para ver si el campo de entrada está en NULL
-    //si es null ingreso hra entrada, de lo contrario ingreso hra salida.
-    //ActualizarDatos(codigo_barra);
-    }
-    console.log(response);
-    });
-
-};
 
   return(
     <main>
@@ -288,10 +327,11 @@ console.log("Ingreso mensaje hora Salida Almuerzo: 1");
         <input type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => captura(e)}     onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
       </div>
       <div>
-        <button id="probar" onClick={busquedaCB}>Prueba</button>
+        <button id="probar" onClick={BusquedaEmpleado}>Prueba</button>
       </div>
   <div>
-  <button id="probar2" onClick={busquedaPr}>Prueba2</button>
+  <button id="probar2" onClick={BusquedaEmpleado}>Prueba2</button>
+ 
   </div>
     </main>
   )
