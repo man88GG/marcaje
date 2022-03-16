@@ -10,6 +10,12 @@ import { findAllByTestId } from '@testing-library/react';
 //por lo mismo se bugea cuando marcan hora de entrada alm y otros hora salida normal
 //calculo de horas al marcar la ultima vez
 
+
+//la forma de limpiar elimina el contenido de los states anteriores y por lo tanto no se puede hacer el procedimiento de actualizar
+//usar el mismo array siempre y que se limpie al finalizar el día(apagar la pc)
+//el array puede bugearse al llenarse excesivamente ?
+
+
 const date = new Date();
 
 function App (){
@@ -24,24 +30,20 @@ const[controlador1, setControlador1]=useState("");
 const[controlador2, setControlador2]=useState("");
 const[controlador3, setControlador3]=useState("");
 const[controlador4, setControlador4]=useState("");
+const[controlador5, setControlador5]=useState("");
 const total_horas =0;
-
 
   //////
   const [state, setState] = useState('');
     
-
   const captura = (event) => {
-    
     //condicion para la busqueda e ingreso de datos cuando el lector manda la señal
     if(event.key==='Enter'){
-      
     //se cambia el estado al nombre de la tecla que es presionada, en este caso es la tecla enter
       setState(event.key);
       //window.location.href = window.location.href;
       //se llama a la funcion 
       BusquedaEmpleado();
-      
     }
     
   };
@@ -73,13 +75,15 @@ const [codigo_barra, setCodigo_Barra] = useState("");
  
 //hace focus al texbox que obtendrá la variable del codigo barras
   const focusDiv = useRef();
-  
 useEffect(()=>{
-  if(focusDiv.current)focusDiv.current.focus();
-},[focusDiv]);
+  const focusPermanente = setInterval (()=>{
+    if(focusDiv.current)focusDiv.current.focus();
+  },100);
+  return()=>clearInterval(focusPermanente);
+},[]);
+
+
 //
-
-
 const HandlerOne=(e)=>{
  // e.preventDefault();
   setControlador1('Inicia Request al Backend');
@@ -90,11 +94,9 @@ setTimeout(()=>{
 
 useEffect(()=>{
   if(controlador1 === '1'){
-    ingresoDatos();
-    setMensajeHoraEnt(null);
-    setMensajeHoraSalAlm(null);
-    setMensajeHoraEntAlm(null);
-    setMensajeHoraSal(null);
+    ingresoDatos(codigo_barra);
+
+    HandlerFive();
   }
 },[controlador1])
 
@@ -109,10 +111,8 @@ setTimeout(()=>{
 useEffect(()=>{
   if(controlador2 === '2'){
     ActualizarDatosHraSalidaAlm(codigo_barra);
-    setMensajeHoraEnt(null);
-    setMensajeHoraSalAlm(null);
-    setMensajeHoraEntAlm(null);
-    setMensajeHoraSal(null);
+
+    HandlerFive();
   }
 },[controlador2])
 
@@ -127,10 +127,8 @@ setTimeout(()=>{
 useEffect(()=>{
   if(controlador3 === '3'){
     ActualizarDatosHraEntradaAlm(codigo_barra);
-    setMensajeHoraEnt(null);
-    setMensajeHoraSalAlm(null);
-    setMensajeHoraEntAlm(null);
-    setMensajeHoraSal(null);
+    HandlerFive();
+    
   }
 },[controlador3])
 
@@ -145,16 +143,29 @@ setTimeout(()=>{
 useEffect(()=>{
   if(controlador4 === '4'){
     ActualizarDatosHraSalida(codigo_barra);
-    setMensajeHoraEnt(null);
-    setMensajeHoraSalAlm(null);
-    setMensajeHoraEntAlm(null);
-    setMensajeHoraSal(null);
+HandlerFive();
   }
 },[controlador4])
 
+const HandlerFive=(e)=>{
+  // e.preventDefault();
+   setControlador5('Inicia Request al Backend');
+ setTimeout(()=>{
+   setControlador5('5')
+ },1000)
+ }
+ useEffect(()=>{
+   if(controlador5 === '5'){
+    
+     //window.location.href = window.location.href;
+   }
+ },[controlador5])
+
+
+
 
 //insertar datos
-const ingresoDatos =()=>{
+const ingresoDatos =(codigo_barra)=>{
   Axios.post('http://localhost:3001/DatosMarcajeEmpleado', {    
     codigo_barra: codigo_barra,
     hora_marcaje: date.toLocaleTimeString(),
@@ -188,7 +199,7 @@ console.log(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYea
 
 
 //insertar datos
-const Bitacora =()=>{
+const Bitacora =(codigo_barra)=>{
   Axios.post('http://localhost:3001/bitacora', {    
     codigo_barra: codigo_barra,
     //se llama a la fecha y obtiene solamente la hora
@@ -282,6 +293,7 @@ const BusquedaEmpleado = () => {
         //muestra mensaje de Empleado no encontrado
         setMensajeNombre(response.data.message)
         setMensajeApellido("")
+        HandlerFive();
        }else{
 
         BuscarFechaActual();
@@ -302,9 +314,6 @@ const BuscarFechaActual = () => {
         periodo_marcaje: date.getFullYear(),
 
   }).then((response)=>{
-
-    //las variables no se actualizan la 1ra vez, ese es el bugaso que no jalan bien
-    console.log("============================================================")
    
     if(response.data.message){
     
@@ -323,11 +332,9 @@ const BuscarFechaActual = () => {
         HandlerOne();
         Bitacora();
         
-
        }else{
 
-
-          // setMensajeNombre(response.data[0].hra_entrada);
+         // setMensajeNombre(response.data[0].hra_entrada);
          /////
          console.log("============================================================")
          console.log(mensajeNombre);
@@ -357,7 +364,7 @@ const BuscarFechaActual = () => {
     
          HandlerTwo();
              //ActualizarDatosHraSalidaAlm(codigo_barra);
-             Bitacora();
+             Bitacora(codigo_barra);
              
          }else{
            if(mensajeHoraEnt != null && mensajeHoraSalAlm != null && mensajeHoraEntAlm == null && mensajeHoraSal == null){
@@ -379,16 +386,18 @@ const BuscarFechaActual = () => {
                  console.log("Ya se han realizado todos los marcajes del día: 4");
                  CalculoTiempoDiario();
                  console.log(mensajeNombre);
-console.log(mensajeApellido);
+                 console.log(mensajeApellido);
 
 console.log(mensajeHoraEnt);
 console.log(mensajeHoraSal);
 console.log(mensajeHoraEntAlm);
 console.log(mensajeHoraSalAlm);
+HandlerFive();
 
-            
                }else{
                  console.log("El empleado ha realizado un marcaje erróneo 1072022");
+
+                 HandlerFive();
                  
                }
              }
@@ -406,7 +415,7 @@ const CalculoTiempoDiario =()=>{
   console.log("Hora E: " + mensajeHoraEnt);
   console.log("Hora S: " + mensajeHoraSal);
  
-var p1 = (mensajeHoraSal);
+    var p1 = (mensajeHoraSal);
     var p2 = (mensajeHoraEnt);  
     var hora1 = (p1).split(":"),
     hora2 = (p2).split(":"),
@@ -420,10 +429,7 @@ t1.setHours(t1.getHours() - t2.getHours(), t1.getMinutes() - t2.getMinutes(), t1
 //Mensaje de total de Horas
 console.log("Total de Tiempo Laborado el día de hoy: " + (t1.getHours() ? t1.getHours() + (t1.getHours() > 1 ? " horas" : " hora") : "") + (t1.getMinutes() ? ", " + t1.getMinutes() + (t1.getMinutes() > 1 ? " minutos" : " minuto") : "") + (t1.getSeconds() ? (t1.getHours() || t1.getMinutes() ? " y " : "") + t1.getSeconds() + (t1.getSeconds() > 1 ? " segundos" : " segundo") : ""));
 
-  
-
 }
-
   return(
     <main>
     <div className ="img_logo">
@@ -440,9 +446,7 @@ console.log("Total de Tiempo Laborado el día de hoy: " + (t1.getHours() ? t1.ge
       <div className="codigo_barra">
         <input type="text"  ref={focusDiv}  onKeyDown={(e) => captura(e)}   onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
       </div>
-   
     </main>
   )
 }
-
   export default App;

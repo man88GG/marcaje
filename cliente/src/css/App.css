@@ -51,16 +51,16 @@ img{
 
 
 .codigo_barra {
-      width: 300px;
+      width: 0px;
       margin: 0 auto;
       
     }
     
     .codigo_barra input[type="text"]{
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #dddddd;
-      margin-bottom: 15px;
+      width: 0%;
+      padding: 0px;
+      border: 0px solid #dddddd;
+      margin-bottom: 0px;
       box-sizing:border-box;
     }
 
