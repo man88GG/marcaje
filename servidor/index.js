@@ -31,7 +31,7 @@ app.post("/DatosMarcajeEmpleado", (req,res) =>{
 
     //consulta ingreso de marcaje
     db.query(
-        "INSERT INTO marcaje (fecha_marcaje,hra_entrada, fk_id_empleado) VALUES(?,?,?)",
+        "INSERT INTO marcaje (fecha_marcaje,hra_entrada, id_empleado) VALUES(?,?,?)",
     [fecha_marcaje,hora_marcaje,codigo_barra],
     (err,result)=>{
         if(err){
@@ -61,7 +61,7 @@ app.post("/bitacora", (req,res) =>{
 
     //consulta para la bitacora
     db.query(
-        "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje) VALUES(?,?)",
+        "INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado) VALUES(?,?)",
     [fecha_marcaje +" "+ hora_marcaje,codigo_barra],
     (err,result)=>{
         if(err){
@@ -82,7 +82,7 @@ app.put("/actualizarHraSalidaAlm", (req,res) =>{
     const hora_marcaje = req.body.hora_marcaje;
     const mensajeNombre= req.body.mensajeNombre;
     
-   db.query("UPDATE marcaje SET hra_salida_alm = ?, horas_laboradas = ? WHERE fk_id_empleado =?", [hora_marcaje, mensajeNombre, codigo_barra],
+   db.query("UPDATE marcaje SET hra_salida_alm = ?, horas_laboradas = ? WHERE id_empleado =?", [hora_marcaje, mensajeNombre, codigo_barra],
    (err,result)=>{
     if(err){
         console.log(err)
@@ -100,7 +100,7 @@ app.put("/actualizarHraEntradaAlm", (req,res) =>{
     const codigo_barra = req.body.codigo_barra;
     const hora_marcaje = req.body.hora_marcaje;
 
-   db.query("UPDATE marcaje SET hra_entrada_alm = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
+   db.query("UPDATE marcaje SET hra_entrada_alm = ? WHERE id_empleado =?", [hora_marcaje, codigo_barra],
    (err,result)=>{
     if(err){
         console.log(err)
@@ -119,7 +119,7 @@ app.put("/actualizarHraSalida", (req,res) =>{
     const codigo_barra = req.body.codigo_barra;
     const hora_marcaje = req.body.hora_marcaje;
 
-   db.query("UPDATE marcaje SET hra_salida = ? WHERE fk_id_empleado =?", [hora_marcaje, codigo_barra],
+   db.query("UPDATE marcaje SET hra_salida = ? WHERE id_empleado =?", [hora_marcaje, codigo_barra],
    (err,result)=>{
     if(err){
         console.log(err)
@@ -187,7 +187,7 @@ app.post("/buscarFecha",(req,res)=>{
 
     const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
-     db.query("SELECT fecha_marcaje, hra_entrada, hra_salida_alm, hra_entrada_alm, hra_salida FROM marcaje WHERE fecha_marcaje =? AND fk_id_empleado =?",[fecha_marcaje, codigo_barra] , 
+     db.query("SELECT fecha_marcaje, hra_entrada, hra_salida_alm, hra_entrada_alm, hra_salida FROM marcaje WHERE fecha_marcaje =? AND id_empleado =?",[fecha_marcaje, codigo_barra] , 
      (err,result)=>{
          if(err){
              res.send({err: err});

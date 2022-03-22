@@ -6,7 +6,6 @@ import './css/App.css';
 import { findAllByTestId } from '@testing-library/react';
 
 
-//hay un retraso de 30 seg al marcar con el lector
 //ver como obtener los valores al realizar la busqueda la primera vez
 
 
@@ -16,6 +15,10 @@ import { findAllByTestId } from '@testing-library/react';
 //si no existe empleado, mostrar mensaje que no existe
 // si existe, comparar los nulls de las fechas para saber donde insertar
 
+//aumentar el tiempo 
+//reloj ya arreglado
+//revisar lo de los periodos para marcaje y usar ifs para saber donde ubicar donde iria el marcaje
+//esto ultimo hacerl con ifs
 
 const date = new Date();
 
@@ -60,21 +63,13 @@ const [codigo_barra, setCodigo_Barra] = useState("");
 
 //Se obtiene la fecha actual y se divide en fragmentos para mostrar en el diseño luego
 /////
-  const [dateTime, setDateTime] = useState({
-    hours: date.getHours(),
-    minutes: date.getMinutes(),
-    seconds: date.getSeconds()
-  });
-  useEffect(() => {
-    const timer = setInterval(() => {
+const [clockState, setClockState] = useState();
+
+useEffect (()=>{ 
+    setInterval(() => {
       const date = new Date();
-      setDateTime({
-        hours: date.getHours(),
-        minutes: date.getMinutes(),
-        seconds: date.getSeconds(),
-      });
+      setClockState(date.toLocaleTimeString());
     }, 1000);
-    return () => clearInterval(timer);
   }, []);
 /////
 
@@ -390,7 +385,7 @@ console.log("Total de Tiempo Laborado el día de hoy: " + (t1.getHours() ? t1.ge
     </div>
     <div className="reloj">
       <div>
-        {dateTime.hours}:{dateTime.minutes}:{dateTime.seconds}
+      {clockState}
       </div>
     </div>
     <div className="nombre_emp">
