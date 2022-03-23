@@ -6,11 +6,8 @@ import './css/App.css';
 import { findAllByTestId } from '@testing-library/react';
 
 
-//aumentar el tiempo que aparece el texto
 //revisar lo de los periodos para marcaje y usar ifs para saber donde ubicar donde iria el marcaje
 //esto ultimo hacerlo con ifs
-
-
 
 function useAsyncState(initialValue) {
   const [value, setValue] = useState(initialValue);
@@ -22,25 +19,12 @@ function useAsyncState(initialValue) {
   return [value, setter];
 }
 
-
 function App (){
   
 const date = new Date();
 
 const[mensajeNombre, setMensajeNombre] =useAsyncState("");
 const[mensajeApellido, setMensajeApellido] =useAsyncState("");
-//puede servir a futuro
-const[mensajeHoraEnt, setMensajeHoraEnt] =useAsyncState("");
-const[mensajeHoraSal, setMensajeHoraSal] =useAsyncState("");
-const[mensajeHoraEntAlm, setMensajeHoraEntAlm] =useAsyncState("");
-const[mensajeHoraSalAlm, setMensajeHoraSalAlm] =useAsyncState("");
-//
-const[controlador1, setControlador1]=useAsyncState("");
-const[controlador2, setControlador2]=useAsyncState("");
-const[controlador3, setControlador3]=useAsyncState("");
-const[controlador4, setControlador4]=useAsyncState("");
-const[controlador5, setControlador5]=useAsyncState("");
-
 
   //////
   const [state, setState] = useState('');
@@ -60,7 +44,6 @@ const[controlador5, setControlador5]=useAsyncState("");
 //se declaran variables para envío de datos del MVC
 const [codigo_barra, setCodigo_Barra] = useState("");
 
- 
 //hace focus al texbox que obtendrá la variable del codigo barras
 const focusDiv = useRef(null);
 useEffect(()=>{
@@ -75,83 +58,6 @@ useEffect(()=>{
 
 //seleccionar todo el contenido 
 const handleFocus = (event) => event.target.select();
-
-const HandlerOne=(e)=>{
-  // e.preventDefault();
-   setControlador1('Inicia Request al Backend');
- setTimeout(()=>{
-   setControlador1('1')
- },500)
- }
- useEffect(()=>{
-  if(controlador1 === '1'){
-    
-    
-  }
-},[controlador1])
-
-const HandlerTwo=(e)=>{
-  // e.preventDefault();
-   setControlador2('Inicia Request al Backend');
- setTimeout(()=>{
-   setControlador2('2')
- },500)
- }
- useEffect(()=>{
-   if(controlador2 === '2'){
-    
-     
-   }
- },[controlador2])
-
-
- const HandlerThree=(e)=>{
-  //e.preventDefault();
-  setControlador3('Inicia Request al Backend');
-setTimeout(()=>{
-  setControlador3('3')
-
-},500)
-}
-useEffect(()=>{
-  if(controlador3 === '3'){
-    
-  
-    
-  }
-},[controlador3])
-
-
-const HandlerFour=(e)=>{
- // e.preventDefault();
-  setControlador4('Inicia Request al Backend');
-setTimeout(()=>{
-  setControlador4('4')
-},500)
-}
-useEffect(()=>{
-  if(controlador4 === '4'){
-    
-
-  }
-},[controlador4])
-
-const HandlerFive=(e)=>{
-  // e.preventDefault();
-   setControlador5('Inicia Request al Backend');
- setTimeout(()=>{
-   setControlador5('5')
- },3000)
- }
- useEffect(()=>{
-   if(controlador5 === '5'){
-    //document.getElementById("myForm").reset();
-
-     window.location.href = window.location.href;
-   }
- },[controlador5])
-
-
 
 
 //insertar datos
@@ -337,10 +243,7 @@ const BuscarFechaActual = () => {
                  //setMensajeApellido("")
                 
                  CalculoTiempoDiario(response.data[0].hra_entrada,response.data[0].hra_salida);
-                 setMensajeHoraEnt(response.data[0].hra_entrada);
-                 setMensajeHoraSal(response.data[0].hra_salida);
-            
-               
+
                }else{
                  console.log("El empleado ha realizado un marcaje erróneo ");
                  
