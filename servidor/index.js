@@ -134,6 +134,28 @@ app.put("/actualizarHraSalida", (req,res) =>{
 
 ////////
 
+//actualizar datos
+app.put("/agregarTiempoLaborado", (req,res) =>{
+  
+    const codigo_barra = req.body.codigo_barra;
+    const tiempo_laborado = req.body.tiempo_laborado;
+
+   db.query("UPDATE marcaje SET horas_laboradas = ? WHERE id_empleado =?", [tiempo_laborado, codigo_barra],
+   (err,result)=>{
+    if(err){
+        console.log(err)
+
+    }else{
+        res.send("Values inserted");
+    }
+
+});
+
+});
+
+////////
+
+
 
 //buscar datos y verificar si existe el empleado
 app.post("/buscarEmpleado",(req,res)=>{
@@ -153,29 +175,6 @@ app.post("/buscarEmpleado",(req,res)=>{
     });
 
 });
-//////////////
-/*
-app.get("/buscarEmpleado2",(req,res)=>{
-    const codigo_barra = req.body.codigo_barra;
-    const sqlSelect ="SELECT nombre, apellido FROM empleado WHERE id_empleado =?"
-    db.query(sqlSelect,codigo_barra, (err,result)=>{
-        res.send(result);
-    });
-    /*
-    const codigo_barra = req.body.codigo_barra;
-     db.query("SELECT nombre, apellido FROM empleado WHERE id_empleado =?",[1] , 
-     (err,result)=>{
-         if(err){
-             res.send({err: err});
-         }
-             if(result.length > 0){
-                 res.send(result);
-             }else{ 
-                 res.send({message:"Empleado No Registrado"});
-             }
-     });
- });*/
-///////////////////
 
 //buscar datos y verificar si el empleado ya se registro de entrada
 app.post("/buscarFecha",(req,res)=>{
@@ -198,9 +197,7 @@ app.post("/buscarFecha",(req,res)=>{
              }else{ 
                  res.send({message:"Fecha No Registrada"});
              }
-            
      });
- 
  });
 
 
