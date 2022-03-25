@@ -6,8 +6,6 @@ import './css/App.css';
 import { findAllByTestId } from '@testing-library/react';
 
 
-//revisar lo de los periodos para marcaje y usar ifs para saber donde ubicar donde iria el marcaje
-//esto ultimo hacerlo con ifs
 
 function useAsyncState(initialValue) {
   const [value, setValue] = useState(initialValue);
@@ -30,7 +28,6 @@ const[mensajeApellido, setMensajeApellido] =useAsyncState("");
   const [state, setState] = useState('');
 
   const captura = (event) => {  
-      
     //condicion para la busqueda e ingreso de datos cuando el lector manda la señal
     if(event.key==='Enter'){
     //se cambia el estado al nombre de la tecla que es presionada, en este caso es la tecla enter
@@ -55,16 +52,13 @@ useEffect(()=>{
   return()=>clearInterval(focusPermanente);
 },[focusDiv]);
 
-
 //seleccionar todo el contenido 
 const handleFocus = (event) => event.target.select();
-
 
 //insertar datos
 const ingresoDatos =()=>{
   Axios.post('http://localhost:3001/DatosMarcajeEmpleado', {    
 
-    
     codigo_barra: codigo_barra,
     hora_marcaje:date.toLocaleTimeString(),
     //se llama a la fecha 
@@ -73,15 +67,12 @@ const ingresoDatos =()=>{
     periodo_marcaje: date.getFullYear(),
 }).then(()=>{
  
-
-  
 console.log(date.toLocaleString());
 console.log("conexion exitosa");
 console.log("hora:");
 console.log(date.toLocaleTimeString());
 console.log(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
-//refresca la pagina para liberar el cargado de memoria de las variables usadas
-//window.location.href = window.location.href;
+
   });
 };
 //
@@ -102,47 +93,13 @@ const Bitacora =()=>{
 };
 //
 
-
-//
-const ActualizarDatosHraSalidaAlm = (codigo_barra)=>{
-
-  Axios.put('http://localhost:3001/actualizarHraSalidaAlm',{
-    codigo_barra:codigo_barra,
-    hora_marcaje:date.toLocaleTimeString(),
-    dia_marcaje: date.getDate(),
-    mes_marcaje: (date.getMonth()+1),
-    periodo_marcaje: date.getFullYear(),
-  
-  }).then(()=>{
-
-    //window.location.href = window.location.href;
-    
-  });  
-};
-
-const ActualizarDatosHraEntradaAlm = (codigo_barra)=>{
-
-  Axios.put('http://localhost:3001/actualizarHraEntradaAlm',{
-    codigo_barra:codigo_barra,
-    hora_marcaje:date.toLocaleTimeString(),
-
-    dia_marcaje: date.getDate(),
-    mes_marcaje: (date.getMonth()+1),
-    periodo_marcaje: date.getFullYear(),
-
-  }).then(()=>{
-    //window.location.href = window.location.href;
-    
-
-  
-  });  
-};
-
 const ActualizarDatosHraSalida = (codigo_barra)=>{
 
   Axios.put('http://localhost:3001/actualizarHraSalida',{
     codigo_barra:codigo_barra,
+    
     hora_marcaje:date.toLocaleTimeString(),
+    
 
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
@@ -150,7 +107,7 @@ const ActualizarDatosHraSalida = (codigo_barra)=>{
 
   }).then(()=>{
   
-   BusquedaEmpleado();
+   
   });  
 };
 //
@@ -191,73 +148,61 @@ const BusquedaEmpleado = () => {
     };
 //
 
-//buscar datos
-const BuscarFechaActual = () => {
-    Axios.post('http://localhost:3001/buscarFecha',{
-        codigo_barra:codigo_barra,
-        dia_marcaje: date.getDate(),
-        mes_marcaje: (date.getMonth()+1),
-        periodo_marcaje: date.getFullYear(),
 
-  }).then((response)=>{
-  
-     
+//buscar datos
+const BusquedaFechaExistente = () => {
+  Axios.post('http://localhost:3001/buscarFechaExistente',{
+    codigo_barra:codigo_barra,
+    dia_marcaje: date.getDate(),
+    mes_marcaje: (date.getMonth()+1),
+    periodo_marcaje: date.getFullYear(),
+}).then((response)=>{
 
     if(response.data.message){
-    
-        //Se inserta Hora Entrada
-        console.log("Ingreso Marcaje: 0");
+        //Fecha que contiene NULL en hra salida
+       
+        console.log("Dato No Encontrado")
+        console.log(response);
+       
         ingresoDatos(codigo_barra);
-        
-        Bitacora();
-        
 
        }else{
-
-        
-           if (response.data[0].hra_entrada != null && response.data[0].hra_salida_alm == null && response.data[0].hra_entrada_alm == null && response.data[0].hra_salida == null){
-         console.log("Ingreso mensaje hora Salida Almuerzo: 1");
-         ActualizarDatosHraSalidaAlm(codigo_barra);
-        
-             Bitacora();
-         }else{
-           if(response.data[0].hra_entrada != null && response.data[0].hra_salida_alm != null && response.data[0].hra_entrada_alm == null && response.data[0].hra_salida == null){
-             console.log("Ingreso mensaje hora Entrada Almuerzo: 2");
-             ActualizarDatosHraEntradaAlm(codigo_barra);
-           
-           
-             Bitacora();
-         }else{
-           if(response.data[0].hra_entrada != null && response.data[0].hra_salida_alm != null && response.data[0].hra_entrada_alm != null && response.data[0].hra_salida == null){
-             console.log("Ingreso mensaje hora Salida: 3");
-             ActualizarDatosHraSalida(codigo_barra);
+        console.log(response);
+        console.log("Dato Encontrado")
       
-             
-             //CalculoTiempoDiario(response.data[0].hra_entrada,response.data[0].hra_salida);
-             Bitacora();
-             
-             }else{
-               if(response.data[0].hra_entrada != null && response.data[0].hra_salida_alm != null && response.data[0].hra_entrada_alm != null && response.data[0].hra_salida != null){
-                 
-                 console.log("Ya se han realizado todos los marcajes del día")
-                 //setMensajeApellido("")
-                
-                 CalculoTiempoDiario(response.data[0].hra_entrada,response.data[0].hra_salida);
+        ActualizarDatosHraSalida(codigo_barra);
+        Bitacora();
+       }
 
-               }else{
-                 console.log("El empleado ha realizado un marcaje erróneo ");
-                 
-               }
-             }
-           }
-         }
-         
+       });
+    };
+//
+
+//buscar datos
+const BuscarFechaActual = () => {
+  Axios.post('http://localhost:3001/buscarFecha',{
+      codigo_barra:codigo_barra,
+      dia_marcaje: date.getDate(),
+      mes_marcaje: (date.getMonth()+1),
+      periodo_marcaje: date.getFullYear(),
+
+}).then((response)=>{
+
+  
+  if(response.data.message){
+      //No Existe el dato en la busqueda
+      //Se inserta un nuevo Registro con Hora Entrada
+      console.log("Ingreso Marcaje: 0");
+      ingresoDatos(codigo_barra);
+      Bitacora();
+     }else{
+      BusquedaFechaExistente();
           }
         
     });
   };
   //
-
+  
 //
 const CalculoTiempoDiario =(HoraEnt, HraSal)=>{
   console.log("Hora E: " + HoraEnt);
@@ -305,7 +250,7 @@ ActualizarDatosTiempoLaborado(codigo_barra,HrasLaboradas);
     </div>
       <div className="codigo_barra">
         <input type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => captura(e)}  onFocus={handleFocus} onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
-      </div>  
+      </div>
     </main>
   )
 }
