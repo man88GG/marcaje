@@ -78,14 +78,14 @@ app.post("/bitacora", (req,res) =>{
 app.put("/actualizarHraSalida", (req,res) =>{
   
     const codigo_barra = req.body.codigo_barra;
-    const hora_marcaje2 = req.body.hora_marcaje2;
+    const hora_marcaje = req.body.hora_marcaje;
     const dia_marcaje= req.body.dia_marcaje;
     const mes_marcaje= req.body.mes_marcaje;
     const periodo_marcaje= req.body.periodo_marcaje;
 
     const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
-   db.query("UPDATE rrhh_marcaje SET hra_salida = ? WHERE fecha_marcaje =? AND id_empleado =?", [hora_marcaje2, fecha_marcaje, codigo_barra],
+   db.query("UPDATE rrhh_marcaje SET hra_salida = ? WHERE fecha_marcaje =? AND id_empleado =?", [hora_marcaje, fecha_marcaje, codigo_barra],
    (err,result)=>{
     if(err){
         console.log(err)

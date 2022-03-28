@@ -7,7 +7,7 @@ import { findAllByTestId } from '@testing-library/react';
 
 
 
-function useAsyncState(initialValue) {
+function UseAsyncState(initialValue) {
   const [value, setValue] = useState(initialValue);
   const setter = x =>
     new Promise(resolve => {
@@ -21,20 +21,23 @@ function App (){
   
 const date = new Date();
 
-const[mensajeNombre, setMensajeNombre] =useAsyncState("");
-const[mensajeApellido, setMensajeApellido] =useAsyncState("");
-
+const[mensajeNombre, setMensajeNombre] =UseAsyncState("");
+const[mensajeApellido, setMensajeApellido] =UseAsyncState("");
+const[controlador1, setControlador1]=useState("");
   //////
   const [state, setState] = useState('');
 
-  const captura = (event) => {  
+  const Captura = (event) => {  
     //condicion para la busqueda e ingreso de datos cuando el lector manda la señal
     if(event.key==='Enter'){
     //se cambia el estado al nombre de la tecla que es presionada, en este caso es la tecla enter
+    setControlador1('0')
       setState(event.key);
       //se llama a la funcion 
       BusquedaEmpleado();
-    }
+    }/*else{
+      HandlerOne();
+    }*/
   };
 ////////
 
@@ -52,11 +55,29 @@ useEffect(()=>{
   return()=>clearInterval(focusPermanente);
 },[focusDiv]);
 
+/*
+
+const HandlerOne=(e)=>{
+  //e.preventDefault();
+   setControlador1('Inicia Request al Backend');
+ setTimeout(()=>{
+   setControlador1('1')
+ },50000)
+ }
+ 
+ useEffect(()=>{
+   if(controlador1 === '1'){
+    window.location.href = window.location.href;
+   }
+ },[controlador1])*/
+
+ 
+
 //seleccionar todo el contenido 
 const handleFocus = (event) => event.target.select();
 
 //insertar datos
-const ingresoDatos =()=>{
+const IngresoDatos =()=>{
   Axios.post('http://localhost:3001/DatosMarcajeEmpleado', {    
 
     codigo_barra: codigo_barra,
@@ -164,7 +185,7 @@ const BusquedaFechaExistente = () => {
         console.log("Dato No Encontrado")
         console.log(response);
        
-        ingresoDatos(codigo_barra);
+        IngresoDatos(codigo_barra);
 
        }else{
         console.log(response);
@@ -193,7 +214,7 @@ const BuscarFechaActual = () => {
       //No Existe el dato en la busqueda
       //Se inserta un nuevo Registro con Hora Entrada
       console.log("Ingreso Marcaje: 0");
-      ingresoDatos(codigo_barra);
+      IngresoDatos(codigo_barra);
       Bitacora();
      }else{
       BusquedaFechaExistente();
@@ -249,7 +270,7 @@ ActualizarDatosTiempoLaborado(codigo_barra,HrasLaboradas);
     <h1>{mensajeNombre} {mensajeApellido}</h1>
     </div>
       <div className="codigo_barra">
-        <input type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => captura(e)}  onFocus={handleFocus} onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
+        <input type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => Captura(e)}  onFocus={handleFocus} onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
       </div>
     </main>
   )
