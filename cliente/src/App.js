@@ -20,10 +20,11 @@ function UseAsyncState(initialValue) {
 function App (){
   
 const date = new Date();
-
+const horaMarcaje = new Date().toLocaleTimeString();
 const[mensajeNombre, setMensajeNombre] =UseAsyncState("");
 const[mensajeApellido, setMensajeApellido] =UseAsyncState("");
 const[controlador1, setControlador1]=useState("");
+const[obtieneHora,setObtieneHora]=useState(date.toLocaleTimeString());
   //////
   const [state, setState] = useState('');
 
@@ -33,11 +34,13 @@ const[controlador1, setControlador1]=useState("");
     //se cambia el estado al nombre de la tecla que es presionada, en este caso es la tecla enter
     setControlador1('0')
       setState(event.key);
+      
+      
       //se llama a la funcion 
       BusquedaEmpleado();
-    }/*else{
+    }else{
       HandlerOne();
-    }*/
+    }
   };
 ////////
 
@@ -55,21 +58,22 @@ useEffect(()=>{
   return()=>clearInterval(focusPermanente);
 },[focusDiv]);
 
-/*
+
 
 const HandlerOne=(e)=>{
   //e.preventDefault();
    setControlador1('Inicia Request al Backend');
  setTimeout(()=>{
    setControlador1('1')
- },50000)
+ },1000)
  }
  
  useEffect(()=>{
    if(controlador1 === '1'){
-    window.location.href = window.location.href;
+    //window.location.href = window.location.href;
+    console.log("Prueba Hora: " + horaMarcaje);
    }
- },[controlador1])*/
+ },[controlador1])
 
  
 
@@ -81,7 +85,7 @@ const IngresoDatos =()=>{
   Axios.post('http://localhost:3001/DatosMarcajeEmpleado', {    
 
     codigo_barra: codigo_barra,
-    hora_marcaje:date.toLocaleTimeString(),
+    hora_marcaje:horaMarcaje,
     //se llama a la fecha 
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
@@ -104,7 +108,7 @@ const Bitacora =()=>{
   Axios.post('http://localhost:3001/bitacora', {    
     codigo_barra: codigo_barra,
     //se llama a la fecha y obtiene solamente la hora
-    hora_marcaje:date.toLocaleTimeString(),
+    hora_marcaje:horaMarcaje,
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
     periodo_marcaje: date.getFullYear(),
@@ -119,8 +123,7 @@ const ActualizarDatosHraSalida = (codigo_barra)=>{
   Axios.put('http://localhost:3001/actualizarHraSalida',{
     codigo_barra:codigo_barra,
     
-    hora_marcaje:date.toLocaleTimeString(),
-    
+    hora_marcaje:horaMarcaje,
 
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
@@ -137,7 +140,7 @@ const ActualizarDatosTiempoLaborado = (codigo_barra,tiempo_laborado)=>{
 
   Axios.put('http://localhost:3001/agregarTiempoLaborado',{
     codigo_barra:codigo_barra,
-    tiempo_laborado:tiempo_laborado
+   // tiempo_laborado:tiempo_laborado
 
   }).then(()=>{
    

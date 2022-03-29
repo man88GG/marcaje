@@ -85,7 +85,7 @@ app.put("/actualizarHraSalida", (req,res) =>{
 
     const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 
-   db.query("UPDATE rrhh_marcaje SET hra_salida = ? WHERE fecha_marcaje =? AND id_empleado =?", [hora_marcaje, fecha_marcaje, codigo_barra],
+   db.query("UPDATE rrhh_marcaje SET hra_salida = ? WHERE fecha_marcaje =? AND id_empleado =? AND hra_salida IS NULL", [hora_marcaje, fecha_marcaje, codigo_barra],
    (err,result)=>{
     if(err){
         console.log(err)
