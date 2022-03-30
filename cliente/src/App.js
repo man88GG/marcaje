@@ -3,8 +3,7 @@ import logo from './img/logo.jpg';
 import Reloj from './componentes/Reloj';
 import Axios from 'axios'
 import './css/App.css';
-import { findAllByTestId } from '@testing-library/react';
-
+//import { findAllByTestId } from '@testing-library/react';
 
 
 function UseAsyncState(initialValue) {
@@ -20,11 +19,11 @@ function UseAsyncState(initialValue) {
 function App (){
   
 const date = new Date();
-const horaMarcaje = new Date().toLocaleTimeString();
+
 const[mensajeNombre, setMensajeNombre] =UseAsyncState("");
 const[mensajeApellido, setMensajeApellido] =UseAsyncState("");
 const[controlador1, setControlador1]=useState("");
-const[obtieneHora,setObtieneHora]=useState(date.toLocaleTimeString());
+
   //////
   const [state, setState] = useState('');
 
@@ -35,7 +34,7 @@ const[obtieneHora,setObtieneHora]=useState(date.toLocaleTimeString());
     setControlador1('0')
       setState(event.key);
       
-      
+    
       //se llama a la funcion 
       BusquedaEmpleado();
     }else{
@@ -65,13 +64,16 @@ const HandlerOne=(e)=>{
    setControlador1('Inicia Request al Backend');
  setTimeout(()=>{
    setControlador1('1')
- },1000)
+ },300000)//5 min aprox
  }
+ 
+ //9min = 500000
+ //17min = 1000000
  
  useEffect(()=>{
    if(controlador1 === '1'){
-    //window.location.href = window.location.href;
-    console.log("Prueba Hora: " + horaMarcaje);
+    window.location.href = window.location.href;
+    //console.log("Prueba Hora: " + horaMarcaje);
    }
  },[controlador1])
 
@@ -82,16 +84,16 @@ const handleFocus = (event) => event.target.select();
 
 //insertar datos
 const IngresoDatos =()=>{
-  Axios.post('http://localhost:3001/DatosMarcajeEmpleado', {    
+  Axios.post('http://localhost:5000/apis/rrh/registrar/registrarMarcaje/:fecha_marcaje/:hra_entrada/:id_empleado', {    
 
     codigo_barra: codigo_barra,
-    hora_marcaje:horaMarcaje,
+    hora_marcaje:date.toLocaleTimeString(),
     //se llama a la fecha 
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
     periodo_marcaje: date.getFullYear(),
 }).then(()=>{
- 
+
 console.log(date.toLocaleString());
 console.log("conexion exitosa");
 console.log("hora:");
@@ -105,10 +107,10 @@ console.log(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYea
 
 //insertar datos
 const Bitacora =()=>{
-  Axios.post('http://localhost:3001/bitacora', {    
+  Axios.post('http://localhost:5000/apis/rrh/registrar/registrarBitacoraMarcaje/:fecha_bitacora_marcaje/:hora_marcaje_bitacora/:id_empleado', {    
     codigo_barra: codigo_barra,
     //se llama a la fecha y obtiene solamente la hora
-    hora_marcaje:horaMarcaje,
+    hora_marcaje:date.toLocaleTimeString(),
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
     periodo_marcaje: date.getFullYear(),
@@ -120,10 +122,10 @@ const Bitacora =()=>{
 
 const ActualizarDatosHraSalida = (codigo_barra)=>{
 
-  Axios.put('http://localhost:3001/actualizarHraSalida',{
+  Axios.put('http://localhost:5000/apis/rrh/actualizar/actualizarHraSalidaMarcaje/:id_empleado/:hora_marcaje/:fecha_marcaje',{
     codigo_barra:codigo_barra,
     
-    hora_marcaje:horaMarcaje,
+    hora_marcaje:date.toLocaleTimeString(),
 
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
@@ -151,12 +153,13 @@ const ActualizarDatosTiempoLaborado = (codigo_barra,tiempo_laborado)=>{
 
 //buscar datos
 const BusquedaEmpleado = () => {
-  Axios.post('http://localhost:3001/buscarEmpleado',{
+  Axios.post('http://localhost:5000/apis/rrh/buscar/obtenerEmpleado/'+codigo_barra,{
     codigo_barra:codigo_barra,
 
 }).then((response)=>{
 
     if(response.data.message){
+      console.log("code: "+codigo_barra);
         //muestra mensaje de Empleado no encontrado
         setMensajeNombre(response.data.message)
         setMensajeApellido("")
@@ -164,18 +167,18 @@ const BusquedaEmpleado = () => {
        }else{
 
         BuscarFechaActual();
-        setMensajeNombre(response.data[0].nombre)
-        setMensajeApellido(response.data[0].apellido)
+       // setMensajeNombre(response.data[0].nombre)
+       // setMensajeApellido(response.data[0].apellido)
        }
 
        });
     };
-//
+//FuRyu
 
 
 //buscar datos
 const BusquedaFechaExistente = () => {
-  Axios.post('http://localhost:3001/buscarFechaExistente',{
+  Axios.post('http://localhost:5000/apis/rrh/buscar/obtenerFechaExistente/:id_empleado/:fecha_marcaje',{
     codigo_barra:codigo_barra,
     dia_marcaje: date.getDate(),
     mes_marcaje: (date.getMonth()+1),
@@ -204,7 +207,7 @@ const BusquedaFechaExistente = () => {
 
 //buscar datos
 const BuscarFechaActual = () => {
-  Axios.post('http://localhost:3001/buscarFecha',{
+  Axios.post('http://localhost:5000/apis/rrh/buscar/obtenerFechaMarcaje/:id_empleado/:fecha_marcaje',{
       codigo_barra:codigo_barra,
       dia_marcaje: date.getDate(),
       mes_marcaje: (date.getMonth()+1),
