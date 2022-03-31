@@ -3,6 +3,7 @@ import logo from './img/logo.jpg';
 import Reloj from './componentes/Reloj';
 import Axios from 'axios'
 import './css/App.css';
+import axios from 'axios';
 //import { findAllByTestId } from '@testing-library/react';
 
 
@@ -19,7 +20,11 @@ function UseAsyncState(initialValue) {
 function App (){
   
 const date = new Date();
-
+const dia_marcaje = date.getDate();
+const mes_marcaje = (date.getMonth()+1);
+const periodo_marcaje = date.getFullYear();
+const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
+const hora_marcaje = date.toLocaleTimeString();
 const[mensajeNombre, setMensajeNombre] =UseAsyncState("");
 const[mensajeApellido, setMensajeApellido] =UseAsyncState("");
 const[controlador1, setControlador1]=useState("");
@@ -33,11 +38,10 @@ const[controlador1, setControlador1]=useState("");
     //se cambia el estado al nombre de la tecla que es presionada, en este caso es la tecla enter
     setControlador1('0')
       setState(event.key);
-      
-    
       //se llama a la funcion 
       BusquedaEmpleado();
     }else{
+      //funcion para recargar la pagina luego de 5 min
       HandlerOne();
     }
   };
@@ -78,20 +82,13 @@ const HandlerOne=(e)=>{
  },[controlador1])
 
  
-
 //seleccionar todo el contenido 
 const handleFocus = (event) => event.target.select();
 
 //insertar datos
 const IngresoDatos =()=>{
-  Axios.post('http://localhost:5000/apis/rrh/registrar/registrarMarcaje/:fecha_marcaje/:hra_entrada/:id_empleado', {    
+  Axios.post('http://localhost:5000/apis/rrh/registrar/registrarMarcaje/'+ fecha_marcaje + '/' + hora_marcaje + '/' + codigo_barra, {    
 
-    codigo_barra: codigo_barra,
-    hora_marcaje:date.toLocaleTimeString(),
-    //se llama a la fecha 
-    dia_marcaje: date.getDate(),
-    mes_marcaje: (date.getMonth()+1),
-    periodo_marcaje: date.getFullYear(),
 }).then(()=>{
 
 console.log(date.toLocaleString());
@@ -107,130 +104,104 @@ console.log(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYea
 
 //insertar datos
 const Bitacora =()=>{
-  Axios.post('http://localhost:5000/apis/rrh/registrar/registrarBitacoraMarcaje/:fecha_bitacora_marcaje/:hora_marcaje_bitacora/:id_empleado', {    
-    codigo_barra: codigo_barra,
-    //se llama a la fecha y obtiene solamente la hora
-    hora_marcaje:date.toLocaleTimeString(),
-    dia_marcaje: date.getDate(),
-    mes_marcaje: (date.getMonth()+1),
-    periodo_marcaje: date.getFullYear(),
+  Axios.post('http://localhost:5000/apis/rrh/registrar/registrarBitacoraMarcaje/'+ fecha_marcaje + '/' + hora_marcaje + '/' + codigo_barra, {    
 }).then(()=>{
-
+console.log("Registro Bitacora")
   });
 };
 //
 
 const ActualizarDatosHraSalida = (codigo_barra)=>{
 
-  Axios.put('http://localhost:5000/apis/rrh/actualizar/actualizarHraSalidaMarcaje/:id_empleado/:hora_marcaje/:fecha_marcaje',{
-    codigo_barra:codigo_barra,
-    
-    hora_marcaje:date.toLocaleTimeString(),
-
-    dia_marcaje: date.getDate(),
-    mes_marcaje: (date.getMonth()+1),
-    periodo_marcaje: date.getFullYear(),
-
+  Axios.put('http://localhost:5000/apis/rrh/actualizar/actualizarHraSalidaMarcaje/'+ codigo_barra + '/' + hora_marcaje + '/' + fecha_marcaje,{
   }).then(()=>{
-  
-   
+   console.log("Dato Actualizado")
   });  
 };
 //
 
-const ActualizarDatosTiempoLaborado = (codigo_barra,tiempo_laborado)=>{
-
-  Axios.put('http://localhost:3001/agregarTiempoLaborado',{
-    codigo_barra:codigo_barra,
-   // tiempo_laborado:tiempo_laborado
-
-  }).then(()=>{
-   
-  });  
-};
-//
-
-
-//buscar datos
-const BusquedaEmpleado = () => {
-  Axios.post('http://localhost:5000/apis/rrh/buscar/obtenerEmpleado/'+codigo_barra,{
-    codigo_barra:codigo_barra,
-
-}).then((response)=>{
-
-    if(response.data.message){
-      console.log("code: "+codigo_barra);
-        //muestra mensaje de Empleado no encontrado
-        setMensajeNombre(response.data.message)
-        setMensajeApellido("")
+const BusquedaEmpleado = () =>{
+  axios.get('http://localhost:5000/apis/rrh/buscar/obtenerEmpleado/' + codigo_barra).then
+  (result=>{
+console.log(result);
+//condicional para verificar si existe el dato en la BD
+     if(result.data.length > 0){
+      console.log("resultado obtenido")
+      setMensajeNombre(result.data[0].nombre)
+      setMensajeApellido(result.data[0].apellido)
+    console.log("Empleado Encontrado: "+ result.data[0].nombre)
+    BuscarFechaActual();
       
-       }else{
-
-        BuscarFechaActual();
-       // setMensajeNombre(response.data[0].nombre)
-       // setMensajeApellido(response.data[0].apellido)
-       }
-
-       });
-    };
-//FuRyu
+  }else{ 
+   
+    console.log("Resultado No Obtenido")
+      console.log("Empleado No Encontrado: ");
+      setMensajeNombre("Empleado No Encontrado")
+      setMensajeApellido("")
+  }
+  
+}).catch
+  (console.log())
+  }
 
 
 //buscar datos
 const BusquedaFechaExistente = () => {
-  Axios.post('http://localhost:5000/apis/rrh/buscar/obtenerFechaExistente/:id_empleado/:fecha_marcaje',{
-    codigo_barra:codigo_barra,
-    dia_marcaje: date.getDate(),
-    mes_marcaje: (date.getMonth()+1),
-    periodo_marcaje: date.getFullYear(),
-}).then((response)=>{
+  Axios.get('http://localhost:5000/apis/rrh/buscar/obtenerFechaExistente/'+ codigo_barra + '/' + fecha_marcaje).then
 
-    if(response.data.message){
-        //Fecha que contiene NULL en hra salida
-       
-        console.log("Dato No Encontrado")
-        console.log(response);
-       
-        IngresoDatos(codigo_barra);
+  (result=>{
 
+    console.log(result);
+
+    if(result.data.length > 0){
+
+      console.log(result);
+      console.log("Fecha Existente Encontrada")
+      ActualizarDatosHraSalida(codigo_barra);
+      Bitacora();
+
+  
        }else{
-        console.log(response);
-        console.log("Dato Encontrado")
-      
-        ActualizarDatosHraSalida(codigo_barra);
-        Bitacora();
+      //Fecha que contiene NULL en hra salida
+       
+      console.log("Fecha Existente No Encontrada")
+      console.log(result);
+     
+      IngresoDatos(codigo_barra);
        }
 
        });
     };
 //
 
+
+
 //buscar datos
 const BuscarFechaActual = () => {
-  Axios.post('http://localhost:5000/apis/rrh/buscar/obtenerFechaMarcaje/:id_empleado/:fecha_marcaje',{
-      codigo_barra:codigo_barra,
-      dia_marcaje: date.getDate(),
-      mes_marcaje: (date.getMonth()+1),
-      periodo_marcaje: date.getFullYear(),
+  Axios.get('http://localhost:5000/apis/rrh/buscar/obtenerFechaMarcaje/'+ codigo_barra +'/'+ fecha_marcaje).then
+  (result=>{
+    console.log(result);
+    //condicional para verificar si existe el dato en la BD
+         if(result.data.length > 0){
+           console.log("Existe Fecha Anterior Registrada")
+          BusquedaFechaExistente();
+          
+      }else{ 
+       
+        //No Existe el dato en la busqueda
+        //Se inserta un nuevo Registro con Hora Entrada
+        console.log("Nuevo Registro de Hra Entrada")
+        console.log("Ingreso Marcaje: 0");
+        IngresoDatos(codigo_barra);
+        Bitacora();
+      }
+      
+    }).catch
+      (console.log())
+      }
 
-}).then((response)=>{
-
-  
-  if(response.data.message){
-      //No Existe el dato en la busqueda
-      //Se inserta un nuevo Registro con Hora Entrada
-      console.log("Ingreso Marcaje: 0");
-      IngresoDatos(codigo_barra);
-      Bitacora();
-     }else{
-      BusquedaFechaExistente();
-          }
-        
-    });
-  };
   //
-  
-//
+  /*
 const CalculoTiempoDiario =(HoraEnt, HraSal)=>{
   console.log("Hora E: " + HoraEnt);
   console.log("Hora S: " + HraSal);
@@ -260,7 +231,7 @@ console.log("Horas Laboradas: " + Horas + ":"+ Minutos + ":"+ Segundos);
 
 ActualizarDatosTiempoLaborado(codigo_barra,HrasLaboradas);
 
-}
+}*/
 
   return(
     <main>
