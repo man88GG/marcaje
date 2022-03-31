@@ -8,10 +8,10 @@ export class marcajeRegistrar{
 
     public async registrarMarcaje(fecha_marcaje:any, hra_entrada:any, fk_id_empleado: any){
         return new ConnectionSINCYT().retornarConexion().then(async connection => {
-          
+
             try{
                 const rawData = await connection.manager.query(`
-                INSERT INTO sincyt.rrhh_evaluacion(fecha_marcaje,hra_entrada, fk_id_empleado)
+                INSERT INTO sincyt.rrhh_marcaje (fecha_marcaje,hra_entrada, id_empleado)
                 VALUES('${fecha_marcaje}','${hra_entrada}','${fk_id_empleado}');`);
                 const id = rawData.insertId;
                 /* const evaluacion= await new evaluacionObtener().obtenerEvaluaciones(id); */
@@ -27,10 +27,10 @@ export class marcajeRegistrar{
 
     public async registrarBitacoraMarcaje(fecha_bitacora_marcaje:any, hora_marcaje_bitacora:any ,id_empleado:any){
         return new ConnectionSINCYT().retornarConexion().then(async connection => {
-          
+
             try{
                 const rawData = await connection.manager.query(`
-                INSERT INTO bitacora_marcaje (fecha_bitacora_marcaje,id_empleado_bitacora_marcaje)
+                INSERT INTO sincyt.rrhh_bitacora_marcaje (fecha_bitacora_marcaje,id_empleado)
                 VALUES('${fecha_bitacora_marcaje + " "+ hora_marcaje_bitacora}','${id_empleado}');`);
                 const id = rawData.insertId;
                 /* const evaluacion= await new evaluacionObtener().obtenerEvaluaciones(id); */

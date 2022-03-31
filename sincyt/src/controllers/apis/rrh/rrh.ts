@@ -131,58 +131,63 @@ export class rrh{
 
 
          // ---------------Metodos PUT------------------------------------------------
-         this.router.put(this.path + '/actualizar/actualizarHraSalidaAlmMarcaje/:id_empleado/:hora_marcaje', this.actualizarHraSalidaAlmMarcaje);
-         this.router.put(this.path + '/actualizar/actualizarHraEntradaAlmMarcaje/:id_empleado/:hora_marcaje', this.actualizarHraEntradaAlmMarcaje);
-         this.router.put(this.path + '/actualizar/actualizarHraSalidaMarcaje/:id_empleado/:hora_marcaje', this.actualizarHraSalidaMarcaje);
-
-         // ---------------Metodos POST------------------------------------------------
-         this.router.post(this.path + '/registrar/registrarMarcaje/:fecha_marcaje/:hra_entrada/:fk_id_empleado', this.registrarMarcaje);
-         this.router.post(this.path + '/registrar/registrarBitacoraMarcaje/:fecha_bitacora_marcaje/:hora_marcaje_bitacora/:id_empleado', this.registrarBitacoraMarcaje);
-         this.router.post(this.path + '/buscar/obtenerFechaMarcaje/:id_empleado/:fecha_marcaje', this.obtenerFechaEmpleado);
-         this.router.post(this.path + '/buscar/obtenerFechaEmpleado/:id_empleado', this.obtenerFechaMarcaje);
+         this.router.put(this.path + '/actualizar/actualizarHraSalidaMarcaje/:id_empleado/:hora_marcaje/:fecha_marcaje', this.actualizarHraSalidaMarcaje);
+         //this.router.put(this.path + '/actualizar/actualizarTiempoLaboradoDiario/:tiempo_laborado/:hora_marcaje', this.actualizarTiempoLaboradoDiario);
          
+         // ---------------Metodos POST------------------------------------------------
+         this.router.post(this.path + '/registrar/registrarMarcaje/:fecha_marcaje/:hra_entrada/:id_empleado', this.registrarMarcaje);
+         this.router.post(this.path + '/registrar/registrarBitacoraMarcaje/:fecha_bitacora_marcaje/:hora_marcaje_bitacora/:id_empleado', this.registrarBitacoraMarcaje);
+
+         this.router.post(this.path + '/buscar/obtenerEmpleado/:id_empleado', this.obtenerEmpleado);
+         this.router.post(this.path + '/buscar/obtenerFechaMarcaje/:id_empleado/:fecha_marcaje', this.obtenerFechaMarcaje);
+         this.router.post(this.path + '/buscar/obtenerFechaExistente/:id_empleado/:fecha_marcaje', this.obtenerFechaExistente);
          
         }
-
 
        /*APIS DE MARCAJE */
        /*POST*/
        public async registrarMarcaje(req: Request, res: Response){
         const obj = new marcajeRegistrar();
          res.status(200).send(await obj.registrarMarcaje( req.params.fecha_marcaje,
-        req.params.hra_entrada, req.params.fk_id_empleado));
+        req.params.hra_entrada, req.params.id_empleado));
+        
     }
+    
     public async registrarBitacoraMarcaje(req: Request, res: Response){
         const obj = new marcajeRegistrar();
          res.status(200).send(await obj.registrarBitacoraMarcaje( req.params.fecha_bitacora_marcaje,
         req.params.hora_marcaje_bitacora, req.params.id_empleado));
     }
+
+    public async obtenerEmpleado(req: Request, res: Response){
+        const obj = new marcajeObtener();
+         res.status(200).send(await obj.obtenerEmpleado( req.params.id_empleado));
+    }
+
     public async obtenerFechaMarcaje(req: Request, res: Response){
         const obj = new marcajeObtener();
          res.status(200).send(await obj.obtenerFechaMarcaje( req.params.id_empleado,
         req.params.fecha_marcaje));
     }
-    public async obtenerFechaEmpleado(req: Request, res: Response){
+
+    public async obtenerFechaExistente(req: Request, res: Response){
         const obj = new marcajeObtener();
-         res.status(200).send(await obj.obtenerFechaEmpleado( req.params.id_empleado));
+         res.status(200).send(await obj.obtenerFechaExistente( req.params.id_empleado,
+        req.params.fecha_marcaje));
     }
 
     /*PUT*/
-    public async actualizarHraSalidaAlmMarcaje(req : Request, res:Response){
-        const obj = new marcajeActualizar();
-        res.status(200).send(await obj.actualizarHraSalidaAlmMarcaje(req.params.id_empleado, req.params.hora_marcaje));
-    }
-
-    public async actualizarHraEntradaAlmMarcaje(req : Request, res:Response){
-        const obj = new marcajeActualizar();
-        res.status(200).send(await obj.actualizarHraEntradaAlmMarcaje(req.params.id_empleado, req.params.hora_marcaje));
-    }
 
     public async actualizarHraSalidaMarcaje(req : Request, res:Response){
         const obj = new marcajeActualizar();
-        res.status(200).send(await obj.actualizarHraSalidaMarcaje(req.params.id_empleado, req.params.hora_marcaje));
+        res.status(200).send(await obj.actualizarHraSalidaMarcaje(req.params.id_empleado, req.params.hora_marcaje,req.params.fecha_marcaje));
     }
-
+/*
+    public async actualizarTiempoLaboradoDiario(req : Request, res:Response){
+        const obj = new marcajeActualizar();
+        res.status(200).send(await obj.actualizarTiempoLaboradoDiario(req.params.id_empleado, req.params.tiempo_laborado));
+    }*/
+    
     ///////////////////////
 
     /*GET*/
