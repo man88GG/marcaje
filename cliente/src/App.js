@@ -18,18 +18,21 @@ function UseAsyncState(initialValue) {
 }
 
 function App (){
-  
+//variables para obtener la fecha y hora
 const date = new Date();
 const dia_marcaje = date.getDate();
 const mes_marcaje = (date.getMonth()+1);
 const periodo_marcaje = date.getFullYear();
 const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
 const hora_marcaje = date.toLocaleTimeString();
+//Hooks para mostrar el nombre y apellido en pantalla
 const[mensajeNombre, setMensajeNombre] =UseAsyncState("");
 const[mensajeApellido, setMensajeApellido] =UseAsyncState("");
+//Hook para recargar la pantalla
 const[controlador1, setControlador1]=useState("");
 
-  //////
+
+//Hook para el focus permanente
   const [state, setState] = useState('');
 
   const Captura = (event) => {  
@@ -47,7 +50,7 @@ const[controlador1, setControlador1]=useState("");
   };
 ////////
 
-//se declaran variables para envío de datos del MVC
+//Hook para recibir el codigo de barra
 const [codigo_barra, setCodigo_Barra] = useState("");
 
 //hace focus al texbox que obtendrá la variable del codigo barras
@@ -62,9 +65,8 @@ useEffect(()=>{
 },[focusDiv]);
 
 
-
+//Funcion para llamar a UseEffect y recarge la pagina cada 5 min
 const HandlerOne=(e)=>{
-  //e.preventDefault();
    setControlador1('Inicia Request al Backend');
  setTimeout(()=>{
    setControlador1('1')
@@ -77,12 +79,11 @@ const HandlerOne=(e)=>{
  useEffect(()=>{
    if(controlador1 === '1'){
     window.location.href = window.location.href;
-    //console.log("Prueba Hora: " + horaMarcaje);
    }
  },[controlador1])
 
  
-//seleccionar todo el contenido 
+//seleccionar todo el contenido del txt
 const handleFocus = (event) => event.target.select();
 
 //insertar datos
@@ -91,16 +92,12 @@ const IngresoDatos =()=>{
 
 }).then(()=>{
 
-console.log(date.toLocaleString());
 console.log("conexion exitosa");
-console.log("hora:");
-console.log(date.toLocaleTimeString());
-console.log(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear());
+console.log("Ingreso Realizado");
 
   });
 };
 //
-
 
 //insertar datos
 const Bitacora =()=>{
@@ -123,19 +120,15 @@ const ActualizarDatosHraSalida = (codigo_barra)=>{
 const BusquedaEmpleado = () =>{
   axios.get('http://localhost:5000/apis/rrh/buscar/obtenerEmpleado/' + codigo_barra).then
   (result=>{
-console.log(result);
 //condicional para verificar si existe el dato en la BD
      if(result.data.length > 0){
-      console.log("resultado obtenido")
+      //Se agrega el nombre y apellido para luego mostrarlos en pantalla
       setMensajeNombre(result.data[0].nombre)
       setMensajeApellido(result.data[0].apellido)
-    console.log("Empleado Encontrado: "+ result.data[0].nombre)
+    //console.log("Empleado Encontrado: "+ result.data[0].nombre)
     BuscarFechaActual();
       
   }else{ 
-   
-    console.log("Resultado No Obtenido")
-      console.log("Empleado No Encontrado: ");
       setMensajeNombre("Empleado No Encontrado")
       setMensajeApellido("")
   }
@@ -151,22 +144,15 @@ const BusquedaFechaExistente = () => {
 
   (result=>{
 
-    console.log(result);
-
     if(result.data.length > 0){
 
-      console.log(result);
       console.log("Fecha Existente Encontrada")
       ActualizarDatosHraSalida(codigo_barra);
       Bitacora();
 
-  
        }else{
-      //Fecha que contiene NULL en hra salida
-       
+      //Fecha que contiene NULL en hra salida 
       console.log("Fecha Existente No Encontrada")
-      console.log(result);
-     
       IngresoDatos(codigo_barra);
        }
 
@@ -174,20 +160,16 @@ const BusquedaFechaExistente = () => {
     };
 //
 
-
-
 //buscar datos
 const BuscarFechaActual = () => {
   Axios.get('http://localhost:5000/apis/rrh/buscar/obtenerFechaMarcaje/'+ codigo_barra +'/'+ fecha_marcaje).then
   (result=>{
-    console.log(result);
     //condicional para verificar si existe el dato en la BD
          if(result.data.length > 0){
            console.log("Existe Fecha Anterior Registrada")
           BusquedaFechaExistente();
           
       }else{ 
-       
         //No Existe el dato en la busqueda
         //Se inserta un nuevo Registro con Hora Entrada
         console.log("Nuevo Registro de Hra Entrada")
@@ -223,6 +205,7 @@ TiempoMayor.setHours(TiempoMayor.getHours() - TiempoMenor.getHours(), TiempoMayo
 var Horas =TiempoMayor.getHours();
 var Minutos =TiempoMayor.getMinutes();
 var Segundos =TiempoMayor.getSeconds();
+//Se agregan los 0's faltantes 
 if (Horas<10){Horas="0"+Horas;}
 if (Minutos<10){Minutos="0"+Minutos;}
 if (Segundos<10){Segundos="0"+Segundos;}
