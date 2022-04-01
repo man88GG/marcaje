@@ -14,7 +14,6 @@ export class marcajeRegistrar{
                 INSERT INTO sincyt.rrhh_marcaje (fecha_marcaje,hra_entrada, id_empleado)
                 VALUES('${fecha_marcaje}','${hra_entrada}','${fk_id_empleado}');`);
                 const id = rawData.insertId;
-                /* const evaluacion= await new evaluacionObtener().obtenerEvaluaciones(id); */
                 const respuesta = { metodo: "registrarMarcaje", codigo: 1, id_marcaje:id, fecha_marcaje, hra_entrada, fk_id_empleado};
                 return respuesta;
             }catch(e){
@@ -33,7 +32,6 @@ export class marcajeRegistrar{
                 INSERT INTO sincyt.rrhh_bitacora_marcaje (fecha_bitacora_marcaje,id_empleado)
                 VALUES('${fecha_bitacora_marcaje + " "+ hora_marcaje_bitacora}','${id_empleado}');`);
                 const id = rawData.insertId;
-                /* const evaluacion= await new evaluacionObtener().obtenerEvaluaciones(id); */
                 const respuesta = { metodo: "registrarBitacoraMarcaje", codigo: 1, id_bitacora_marcaje:id, fecha_bitacora_marcaje, id_empleado};
                 return respuesta;
             }catch(e){
