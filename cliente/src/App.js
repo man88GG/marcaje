@@ -1,5 +1,5 @@
 import React, {Component,useEffect, useRef, useState} from 'react';
-import logo from './img/logo.jpg';
+import logo from './img/logo.png';
 import Reloj from './componentes/Reloj';
 import Axios from 'axios'
 import './css/App.css';
@@ -29,18 +29,12 @@ let hora_marcaje = date.toLocaleTimeString();
 //Hooks para mostrar el nombre y apellido en pantalla
 const[mensajeNombre, setMensajeNombre] =UseAsyncState("");
 const[mensajeApellido, setMensajeApellido] =UseAsyncState("");
-//Hook para recargar la pantalla
-const[controlador1, setControlador1]=useState("");
-
-
 //Hook para el focus permanente
   const [state, setState] = useState('');
 
   const Captura = (event) => {  
     //condicion para la busqueda e ingreso de datos cuando el lector manda la señal
     if(event.key==='Enter'){
-    //se cambia el estado al nombre de la tecla que es presionada, en este caso es la tecla enter
-    setControlador1('0')
       setState(event.key);
       //se llama a la funcion 
       BusquedaEmpleado();
@@ -64,20 +58,20 @@ useEffect(()=>{
 },[focusDiv]);
 
  useEffect(()=>{
-  const prueba = setInterval (()=>{
+  const limpiarTexto = setInterval (()=>{
     setMensajeNombre("")
     setMensajeApellido("")
   },300000);//5 min aprox
    //9min = 500000
  //17min = 1000000
 
-  return()=>clearInterval(prueba);
+  return()=>clearInterval(limpiarTexto);
 },[]);
 
  //funcion para actualizar la variable que obtiene la hora
  function actualizarHora(){
-  const prueba = new Date();
-  hora_marcaje = prueba.toLocaleTimeString();
+  const fecha = new Date();
+  hora_marcaje = fecha.toLocaleTimeString();
   }
 //llama a la función para la Hora
   setInterval(actualizarHora, 1000); 
@@ -93,7 +87,8 @@ const IngresoDatos =()=>{
 /*
 console.log("conexion exitosa");
 console.log("Ingreso Realizado");
-*/
+*/ 
+Bitacora();
   });
 };
 //
@@ -116,6 +111,7 @@ const ActualizarDatosHraSalida = (codigo_barra)=>{
   /*
    console.log("Dato Actualizado")
    */
+   Bitacora();
   });  
 };
 //
@@ -151,12 +147,13 @@ const BusquedaFechaExistente = () => {
 
      // console.log("Fecha Existente Encontrada")
       ActualizarDatosHraSalida(codigo_barra);
-      Bitacora();
+     
 
        }else{
       //Fecha que contiene NULL en hra salida 
       // console.log("Fecha Existente No Encontrada")
       IngresoDatos(codigo_barra);
+      
        }
 
        });
@@ -179,7 +176,7 @@ const BuscarFechaActual = () => {
        // console.log("Ingreso Marcaje: 0");
 
         IngresoDatos(codigo_barra);
-        Bitacora();
+        
       }
       
     }).catch
@@ -233,7 +230,10 @@ ActualizarDatosTiempoLaborado(codigo_barra,HrasLaboradas);
     <h1>{mensajeNombre} {mensajeApellido}</h1>
     </div>
       <div className="codigo_barra">
-        <input type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => Captura(e)}  onFocus={handleFocus} onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
+        <input id="CodigoBarra" type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => Captura(e)}  onFocus={handleFocus} onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
+        <script>
+    document.getElementById("input1").value = "";
+</script>
       </div>
     </main>
   )
