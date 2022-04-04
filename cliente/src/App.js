@@ -24,7 +24,8 @@ const dia_marcaje = date.getDate();
 const mes_marcaje = (date.getMonth()+1);
 const periodo_marcaje = date.getFullYear();
 const fecha_marcaje = (periodo_marcaje +"-"+ mes_marcaje+"-"+dia_marcaje);
-const hora_marcaje = date.toLocaleTimeString();
+
+let hora_marcaje = date.toLocaleTimeString();
 //Hooks para mostrar el nombre y apellido en pantalla
 const[mensajeNombre, setMensajeNombre] =UseAsyncState("");
 const[mensajeApellido, setMensajeApellido] =UseAsyncState("");
@@ -43,9 +44,6 @@ const[controlador1, setControlador1]=useState("");
       setState(event.key);
       //se llama a la funcion 
       BusquedaEmpleado();
-    }else{
-      //funcion para recargar la pagina luego de 5 min
-      HandlerOne();
     }
   };
 ////////
@@ -57,32 +55,33 @@ const [codigo_barra, setCodigo_Barra] = useState("");
 const focusDiv = useRef(null);
 useEffect(()=>{
   const focusPermanente = setInterval (()=>{
-    //selecciona el texto del input 
+    //quita el focus del txt 
     focusDiv.current.blur();
+    //condicion para realizar el focus y poder seleccionar todo el texto
     if(focusDiv.current)focusDiv.current.focus();
   },500);
   return()=>clearInterval(focusPermanente);
 },[focusDiv]);
 
-
-//Funcion para llamar a UseEffect y recarge la pagina cada 5 min
-const HandlerOne=(e)=>{
-   setControlador1('Inicia Request al Backend');
- setTimeout(()=>{
-   setControlador1('1')
- },300000)//5 min aprox
- }
- 
- //9min = 500000
- //17min = 1000000
- 
  useEffect(()=>{
-   if(controlador1 === '1'){
-    window.location.href = window.location.href;
-   }
- },[controlador1])
+  const prueba = setInterval (()=>{
+    setMensajeNombre("")
+    setMensajeApellido("")
+  },300000);//5 min aprox
+   //9min = 500000
+ //17min = 1000000
 
- 
+  return()=>clearInterval(prueba);
+},[]);
+
+ //funcion para actualizar la variable que obtiene la hora
+ function actualizarHora(){
+  const prueba = new Date();
+  hora_marcaje = prueba.toLocaleTimeString();
+  }
+//llama a la función para la Hora
+  setInterval(actualizarHora, 1000); 
+
 //seleccionar todo el contenido del txt
 const handleFocus = (event) => event.target.select();
 
@@ -91,10 +90,10 @@ const IngresoDatos =()=>{
   Axios.post('http://localhost:5000/apis/rrh/registrar/registrarMarcaje/'+ fecha_marcaje + '/' + hora_marcaje + '/' + codigo_barra, {    
 
 }).then(()=>{
-
+/*
 console.log("conexion exitosa");
 console.log("Ingreso Realizado");
-
+*/
   });
 };
 //
@@ -103,7 +102,9 @@ console.log("Ingreso Realizado");
 const Bitacora =()=>{
   Axios.post('http://localhost:5000/apis/rrh/registrar/registrarBitacoraMarcaje/'+ fecha_marcaje + '/' + hora_marcaje + '/' + codigo_barra, {    
 }).then(()=>{
-console.log("Registro Bitacora")
+/*
+  console.log("Registro Bitacora")
+  */
   });
 };
 //
@@ -112,7 +113,9 @@ const ActualizarDatosHraSalida = (codigo_barra)=>{
 
   Axios.put('http://localhost:5000/apis/rrh/actualizar/actualizarHraSalidaMarcaje/'+ codigo_barra + '/' + hora_marcaje + '/' + fecha_marcaje,{
   }).then(()=>{
+  /*
    console.log("Dato Actualizado")
+   */
   });  
 };
 //
@@ -146,13 +149,13 @@ const BusquedaFechaExistente = () => {
 
     if(result.data.length > 0){
 
-      console.log("Fecha Existente Encontrada")
+     // console.log("Fecha Existente Encontrada")
       ActualizarDatosHraSalida(codigo_barra);
       Bitacora();
 
        }else{
       //Fecha que contiene NULL en hra salida 
-      console.log("Fecha Existente No Encontrada")
+      // console.log("Fecha Existente No Encontrada")
       IngresoDatos(codigo_barra);
        }
 
@@ -166,14 +169,15 @@ const BuscarFechaActual = () => {
   (result=>{
     //condicional para verificar si existe el dato en la BD
          if(result.data.length > 0){
-           console.log("Existe Fecha Anterior Registrada")
+          // console.log("Existe Fecha Anterior Registrada")
           BusquedaFechaExistente();
           
       }else{ 
         //No Existe el dato en la busqueda
         //Se inserta un nuevo Registro con Hora Entrada
-        console.log("Nuevo Registro de Hra Entrada")
-        console.log("Ingreso Marcaje: 0");
+       // console.log("Nuevo Registro de Hra Entrada")
+       // console.log("Ingreso Marcaje: 0");
+
         IngresoDatos(codigo_barra);
         Bitacora();
       }
@@ -182,7 +186,6 @@ const BuscarFechaActual = () => {
       (console.log())
       }
 
-  //
   /*
 const CalculoTiempoDiario =(HoraEnt, HraSal)=>{
   console.log("Hora E: " + HoraEnt);
