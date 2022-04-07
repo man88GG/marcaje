@@ -231,9 +231,6 @@ ActualizarDatosTiempoLaborado(codigo_barra,HrasLaboradas);
     </div>
       <div className="codigo_barra">
         <input id="CodigoBarra" type="text" placeholder='codigo' ref={focusDiv}   onKeyDown={(e) => Captura(e)}  onFocus={handleFocus} onChange={(event) => {setCodigo_Barra(event.target.value);}}/>
-        <script>
-    document.getElementById("input1").value = "";
-</script>
       </div>
     </main>
   )
